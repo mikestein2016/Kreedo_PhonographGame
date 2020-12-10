@@ -2592,53 +2592,32 @@ this._sdkType._UpdateAllCurrentTexture();if(!this.WasReleased()&&resize===0){wi.
 ImageWidth(){return this.GetCurrentImageInfo().GetWidth()},ImageHeight(){return this.GetCurrentImageInfo().GetHeight()},PolyPointXAt(i){return this.GetCollisionPolyPoint(i)[0]},PolyPointYAt(i){return this.GetCollisionPolyPoint(i)[1]},PolyPointCount(){return this.GetCollisionPolyPointCount()}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.Touch=class TouchPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
+'use strict';{const C3=self.C3;C3.Plugins.AJAX=class AJAXPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.Touch.Type=class TouchType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}GetScriptInterfaceClass(){return self.ITouchObjectType}};let touchObjectType=null;function GetTouchSdkInstance(){return touchObjectType.GetSingleGlobalInstance().GetSdkInstance()}self.ITouchObjectType=class ITouchObjectType extends self.IObjectClass{constructor(objectType){super(objectType);touchObjectType=objectType;objectType.GetRuntime()._GetCommonScriptInterfaces().touch=
-this}requestPermission(type){const touchInst=GetTouchSdkInstance();if(type==="orientation")return touchInst._RequestPermission(0);else if(type==="motion")return touchInst._RequestPermission(1);else throw new Error("invalid type");}}};
+'use strict';{const C3=self.C3;C3.Plugins.AJAX.Type=class AJAXType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}};
 
 
-'use strict';{const C3=self.C3;const DOM_COMPONENT_ID="touch";C3.Plugins.Touch.Instance=class TouchInstance extends C3.SDKInstanceBase{constructor(inst,properties){super(inst,DOM_COMPONENT_ID);this._touches=new Map;this._useMouseInput=false;this._isMouseDown=false;this._orientCompassHeading=0;this._orientAlpha=0;this._orientBeta=0;this._orientGamma=0;this._accX=0;this._accY=0;this._accZ=0;this._accWithGX=0;this._accWithGY=0;this._accWithGZ=0;this._triggerIndex=0;this._triggerId=0;this._triggerPermission=
-0;this._curTouchX=0;this._curTouchY=0;this._getTouchIndex=0;this._permissionPromises=[];if(properties)this._useMouseInput=properties[0];this.AddDOMMessageHandler("permission-result",e=>this._OnPermissionResult(e));const rt=this.GetRuntime().Dispatcher();this._disposables=new C3.CompositeDisposable(C3.Disposable.From(rt,"pointerdown",e=>this._OnPointerDown(e.data)),C3.Disposable.From(rt,"pointermove",e=>this._OnPointerMove(e.data)),C3.Disposable.From(rt,"pointerup",e=>this._OnPointerUp(e.data,false)),
-C3.Disposable.From(rt,"pointercancel",e=>this._OnPointerUp(e.data,true)),C3.Disposable.From(rt,"deviceorientation",e=>this._OnDeviceOrientation(e.data)),C3.Disposable.From(rt,"deviceorientationabsolute",e=>this._OnDeviceOrientationAbsolute(e.data)),C3.Disposable.From(rt,"devicemotion",e=>this._OnDeviceMotion(e.data)),C3.Disposable.From(rt,"tick2",e=>this._OnTick2()))}Release(){this._touches.clear();super.Release()}_OnPointerDown(e){if(e["pointerType"]==="mouse")if(this._useMouseInput)this._isMouseDown=
-true;else return;const pointerId=e["pointerId"];if(this._touches.has(pointerId))return;const x=e["pageX"]-this._runtime.GetCanvasClientX();const y=e["pageY"]-this._runtime.GetCanvasClientY();const nowTime=e["timeStamp"];const index=this._touches.size;this._triggerIndex=index;this._triggerId=pointerId;const touchInfo=C3.New(C3.Plugins.Touch.TouchInfo);touchInfo.Init(nowTime,x,y,pointerId,index);this._touches.set(pointerId,touchInfo);this.Trigger(C3.Plugins.Touch.Cnds.OnNthTouchStart);this.Trigger(C3.Plugins.Touch.Cnds.OnTouchStart);
-this._curTouchX=x;this._curTouchY=y;this.Trigger(C3.Plugins.Touch.Cnds.OnTouchObject)}_OnPointerMove(e){if(e["pointerType"]==="mouse"&&!this._isMouseDown)return;const touchInfo=this._touches.get(e["pointerId"]);if(!touchInfo)return;const nowTime=e["timeStamp"];if(nowTime-touchInfo.GetTime()<2)return;const x=e["pageX"]-this._runtime.GetCanvasClientX();const y=e["pageY"]-this._runtime.GetCanvasClientY();touchInfo.Update(nowTime,x,y,e["width"],e["height"],e["pressure"])}_OnPointerUp(e,isCancel){if(e["pointerType"]===
-"mouse")if(this._isMouseDown)this._isMouseDown=false;else return;const nowTime=e["timeStamp"];const pointerId=e["pointerId"];const touchInfo=this._touches.get(pointerId);if(!touchInfo)return;this._triggerIndex=touchInfo.GetStartIndex();this._triggerId=touchInfo.GetId();this.Trigger(C3.Plugins.Touch.Cnds.OnNthTouchEnd);this.Trigger(C3.Plugins.Touch.Cnds.OnTouchEnd);if(!isCancel){const tap=touchInfo.ShouldTriggerTap(nowTime);if(tap==="single-tap"){this.Trigger(C3.Plugins.Touch.Cnds.OnTapGesture);this._curTouchX=
-touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnTapGestureObject)}else if(tap==="double-tap"){this.Trigger(C3.Plugins.Touch.Cnds.OnDoubleTapGesture);this._curTouchX=touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnDoubleTapGestureObject)}}touchInfo.Release();this._touches.delete(pointerId)}_RequestPermission(type){this._PostToDOMMaybeSync("request-permission",{"type":type});return new Promise((resolve,reject)=>{this._permissionPromises.push({type,
-resolve,reject})})}_OnPermissionResult(e){const isGranted=e["result"];const type=e["type"];this._triggerPermission=type;const toResolve=this._permissionPromises.filter(o=>o.type===type);for(const o of toResolve)o.resolve(isGranted?"granted":"denied");this._permissionPromises=this._permissionPromises.filter(o=>o.type!==type);if(isGranted){this.Trigger(C3.Plugins.Touch.Cnds.OnPermissionGranted);if(type===0)this._runtime.RequestDeviceOrientationEvent();else this._runtime.RequestDeviceMotionEvent()}else this.Trigger(C3.Plugins.Touch.Cnds.OnPermissionDenied)}_OnDeviceOrientation(e){if(typeof e["webkitCompassHeading"]===
-"number")this._orientCompassHeading=e["webkitCompassHeading"];else if(e["absolute"])this._orientCompassHeading=e["alpha"];this._orientAlpha=e["alpha"];this._orientBeta=e["beta"];this._orientGamma=e["gamma"]}_OnDeviceOrientationAbsolute(e){this._orientCompassHeading=e["alpha"]}_OnDeviceMotion(e){const acc=e["acceleration"];if(acc){this._accX=acc["x"];this._accY=acc["y"];this._accZ=acc["z"]}const withG=e["accelerationIncludingGravity"];if(withG){this._accWithGX=withG["x"];this._accWithGY=withG["y"];
-this._accWithGZ=withG["z"]}}_OnTick2(){const nowTime=performance.now();let index=0;for(const touchInfo of this._touches.values()){if(touchInfo.GetTime()<=nowTime-50)touchInfo._SetLastTime(nowTime);if(touchInfo.ShouldTriggerHold(nowTime)){this._triggerIndex=touchInfo.GetStartIndex();this._triggerId=touchInfo.GetId();this._getTouchIndex=index;this.Trigger(C3.Plugins.Touch.Cnds.OnHoldGesture);this._curTouchX=touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnHoldGestureObject);
-this._getTouchIndex=0}++index}}_GetTouchByIndex(index){index=Math.floor(index);for(const touchInfo of this._touches.values()){if(index===0)return touchInfo;--index}return null}_IsClientPosOnCanvas(touchX,touchY){return touchX>=0&&touchY>=0&&touchX<this._runtime.GetCanvasCssWidth()&&touchY<this._runtime.GetCanvasCssHeight()}GetDebuggerProperties(){const prefix="plugins.touch.debugger";return[{title:prefix+".touches",properties:[...this._touches.values()].map(ti=>({name:"$"+ti.GetId(),value:ti.GetX()+
-", "+ti.GetY()}))}]}}};
+'use strict';{const C3=self.C3;C3.Plugins.AJAX.Instance=class AJAXInstance extends C3.SDKInstanceBase{constructor(inst,properties){super(inst);this._lastData="";this._curTag="";this._progress=0;this._timeout=-1;this._nextRequestHeaders=new Map;this._nextReponseBinaryData=null;this._nextRequestOverrideMimeType="";this._nwjsFs=null;this._nwjsPath=null;this._nwjsAppFolder=null;this._isNWjs=this._runtime.GetExportType()==="nwjs";if(this._isNWjs){this._nwjsFs=require("fs");this._nwjsPath=require("path");
+const process=self["process"]||nw["process"];this._nwjsAppFolder=this._nwjsPath["dirname"](process["execPath"])+"\\"}}Release(){super.Release()}async _TriggerError(tag,url,err){console.error(`[Construct 3] AJAX request to '${url}' (tag '${tag}') failed: `,err);this._curTag=tag;await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnAnyError);await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnError)}async _TriggerComplete(tag){this._curTag=tag;await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnAnyComplete);await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnComplete)}async _OnProgress(tag,
+e){if(!e["lengthComputable"])return;this._progress=e["loaded"]/e["total"];this._curTag=tag;await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnProgress)}_OnError(tag,url,err){if(!this._isNWjs){this._TriggerError(tag,url,err);return}const fs=this._nwjsFs;const filePath=this._nwjsAppFolder+url;if(fs["existsSync"](filePath))fs["readFile"](filePath,{"encoding":"utf8"},(err2,data)=>{if(err2)this._TriggerError(tag,url,err2);else{this._lastData=data.replace(/\r\n/g,"\n");this._TriggerComplete(tag)}});else this._TriggerError(tag,
+url,err)}async _DoCordovaRequest(tag,file){const assetManager=this._runtime.GetAssetManager();const binaryData=this._nextReponseBinaryData;this._nextReponseBinaryData=null;try{if(binaryData){const buffer=await assetManager.CordovaFetchLocalFileAsArrayBuffer(file);binaryData.SetArrayBufferTransfer(buffer);this._lastData="";this._TriggerComplete(tag)}else{const data=await assetManager.CordovaFetchLocalFileAsText(file);this._lastData=data.replace(/\r\n/g,"\n");this._TriggerComplete(tag)}}catch(err){this._TriggerError(tag,
+file,err)}}_DoRequest(tag,url,method,data){return new Promise(resolve=>{const errorFunc=err=>{this._OnError(tag,url,err);resolve()};const binaryData=this._nextReponseBinaryData;this._nextReponseBinaryData=null;try{const request=new XMLHttpRequest;request.onreadystatechange=()=>{if(request.readyState===4){if(binaryData)this._lastData="";else this._lastData=(request.responseText||"").replace(/\r\n/g,"\n");if(request.status>=400)this._TriggerError(tag,url,request.status+request.statusText);else{const hasData=
+this._lastData.length||binaryData&&request.response instanceof ArrayBuffer;if((!this._isNWjs||hasData)&&!(!this._isNWjs&&request.status===0&&!hasData)){if(binaryData)binaryData.SetArrayBufferTransfer(request.response);this._TriggerComplete(tag)}}resolve()}};request.onerror=errorFunc;request.ontimeout=errorFunc;request.onabort=errorFunc;request["onprogress"]=e=>this._OnProgress(tag,e);request.open(method,url);if(this._timeout>=0&&typeof request["timeout"]!=="undefined")request["timeout"]=this._timeout;
+request.responseType=binaryData?"arraybuffer":"text";if(data&&!this._nextRequestHeaders.has("Content-Type"))if(typeof data!=="string")request["setRequestHeader"]("Content-Type","application/octet-stream");else request["setRequestHeader"]("Content-Type","application/x-www-form-urlencoded");for(const [header,value]of this._nextRequestHeaders)try{request["setRequestHeader"](header,value)}catch(err){console.error(`[Construct 3] AJAX: Failed to set header '${header}: ${value}': `,err)}this._nextRequestHeaders.clear();
+if(this._nextRequestOverrideMimeType){try{request["overrideMimeType"](this._nextRequestOverrideMimeType)}catch(err){console.error(`[Construct 3] AJAX: failed to override MIME type: `,err)}this._nextRequestOverrideMimeType=""}if(data)request.send(data);else request.send()}catch(err){errorFunc(err)}})}GetDebuggerProperties(){const prefix="plugins.ajax.debugger";return[{title:prefix+".title",properties:[{name:prefix+".last-data",value:this._lastData}]}]}SaveToJson(){return{"lastData":this._lastData}}LoadFromJson(o){this._lastData=
+o["lastData"];this._curTag="";this._progress=0}}};
 
 
-'use strict';{const C3=self.C3;const tempArr=[];C3.Plugins.Touch.Cnds={OnTouchStart(){return true},OnTouchEnd(){return true},IsInTouch(){return this._touches.size>0},OnTouchObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},IsTouchingObject(objectClass){if(!objectClass)return false;const sol=objectClass.GetCurrentSol();
-const instances=sol.GetInstances();for(const inst of instances){const wi=inst.GetWorldInfo();const layer=wi.GetLayer();for(const touchInfo of this._touches.values()){if(!this._IsClientPosOnCanvas(touchInfo.GetX(),touchInfo.GetY()))continue;const [px,py]=layer.CanvasCssToLayer(touchInfo.GetX(),touchInfo.GetY(),wi.GetTotalZElevation());if(wi.ContainsPoint(px,py)){tempArr.push(inst);break}}}if(tempArr.length){sol.SetArrayPicked(tempArr);objectClass.ApplySolToContainer();C3.clearArray(tempArr);return true}else return false},
-CompareTouchSpeed(index,cmp,s){const touchInfo=this._GetTouchByIndex(index);if(!touchInfo)return false;return C3.compare(touchInfo.GetSpeed(),cmp,s)},OrientationSupported(){return true},MotionSupported(){return true},CompareOrientation(orientation,cmp,a){this._runtime.RequestDeviceOrientationEvent();let v=0;if(orientation===0)v=this._orientAlpha;else if(orientation===1)v=this._orientBeta;else v=this._orientGamma;return C3.compare(v,cmp,a)},CompareAcceleration(a,cmp,x){this._runtime.RequestDeviceMotionEvent();
-let v=0;if(a===0)v=this._accWithGX;else if(a===1)v=this._accWithGY;else if(a===2)v=this._accWithGZ;else if(a===3)v=this._accX;else if(a===4)v=this._accY;else v=this._accZ;return C3.compare(v,cmp,x)},OnNthTouchStart(index){index=Math.floor(index);return index===this._triggerIndex},OnNthTouchEnd(index){index=Math.floor(index);return index===this._triggerIndex},HasNthTouch(index){index=Math.floor(index);return this._touches.size>=index+1},OnHoldGesture(){return true},OnTapGesture(){return true},OnDoubleTapGesture(){return true},
-OnHoldGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},OnTapGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,
-this._curTouchY,false)},OnDoubleTapGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},OnPermissionGranted(type){return this._triggerPermission===type},OnPermissionDenied(type){return this._triggerPermission===type}}};
+'use strict';{const C3=self.C3;C3.Plugins.AJAX.Cnds={OnComplete(tag){return C3.equalsNoCase(this._curTag,tag)},OnAnyComplete(){return true},OnError(tag){return C3.equalsNoCase(this._curTag,tag)},OnAnyError(){return true},OnProgress(tag){return C3.equalsNoCase(this._curTag,tag)}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.Touch.Acts={RequestPermission(type){this._RequestPermission(type)}}};
+'use strict';{const C3=self.C3;C3.Plugins.AJAX.Acts={async Request(tag,url){if(this._runtime.IsCordova()&&C3.IsRelativeURL(url)&&location.protocol==="file:")await this._DoCordovaRequest(tag,url);else if(this._runtime.IsPreview()&&C3.IsRelativeURL(url)){const localurl=this._runtime.GetAssetManager().GetLocalUrlAsBlobUrl(url.toLowerCase());await this._DoRequest(tag,localurl,"GET",null)}else await this._DoRequest(tag,url,"GET",null)},async RequestFile(tag,file){if(this._runtime.IsCordova()&&location.protocol===
+"file:")await this._DoCordovaRequest(tag,file);else await this._DoRequest(tag,this._runtime.GetAssetManager().GetLocalUrlAsBlobUrl(file),"GET",null)},async Post(tag,url,data,method){await this._DoRequest(tag,url,method,data)},async PostBinary(tag,url,objectClass,method){if(!objectClass)return;const target=objectClass.GetFirstPicked(this._inst);if(!target)return;const sdkInst=target.GetSdkInstance();const buffer=sdkInst.GetArrayBufferReadOnly();await this._DoRequest(tag,url,method,buffer)},SetTimeout(t){this._timeout=
+t*1E3},SetHeader(n,v){this._nextRequestHeaders.set(n,v)},SetResponseBinary(objectClass){if(!objectClass)return;const inst=objectClass.GetFirstPicked(this._inst);if(!inst)return;this._nextReponseBinaryData=inst.GetSdkInstance()},OverrideMIMEType(m){this._nextRequestOverrideMimeType=m}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.Touch.Exps={TouchCount(){return this._touches.size},X(layerParam){const touchInfo=this._GetTouchByIndex(this._getTouchIndex);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},Y(layerParam){const touchInfo=this._GetTouchByIndex(this._getTouchIndex);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},XAt(index,layerParam){const touchInfo=
-this._GetTouchByIndex(index);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},YAt(index,layerParam){const touchInfo=this._GetTouchByIndex(index);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},XForID(id,layerParam){const touchInfo=this._touches.get(id);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},YForID(id,layerParam){const touchInfo=
-this._touches.get(id);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},AbsoluteX(){const touchInfo=this._GetTouchByIndex(0);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteY(){const touchInfo=this._GetTouchByIndex(0);if(touchInfo)return touchInfo.GetY();else return 0},AbsoluteXAt(index){const touchInfo=this._GetTouchByIndex(index);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteYAt(index){const touchInfo=this._GetTouchByIndex(index);
-if(touchInfo)return touchInfo.GetY();else return 0},AbsoluteXForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteYForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetY();else return 0},SpeedAt(index){const touchInfo=this._GetTouchByIndex(index);if(touchInfo)return touchInfo.GetSpeed();else return 0},SpeedForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetSpeed();else return 0},AngleAt(index){const touchInfo=
-this._GetTouchByIndex(index);if(touchInfo)return C3.toDegrees(touchInfo.GetAngle());else return 0},AngleForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return C3.toDegrees(touchInfo.GetAngle());else return 0},CompassHeading(){this._runtime.RequestDeviceOrientationEvent();return this._orientCompassHeading},Alpha(){this._runtime.RequestDeviceOrientationEvent();return this._orientAlpha},Beta(){this._runtime.RequestDeviceOrientationEvent();return this._orientBeta},Gamma(){this._runtime.RequestDeviceOrientationEvent();
-return this._orientGamma},AccelerationXWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGX},AccelerationYWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGY},AccelerationZWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGZ},AccelerationX(){this._runtime.RequestDeviceMotionEvent();return this._accX},AccelerationY(){this._runtime.RequestDeviceMotionEvent();return this._accY},AccelerationZ(){this._runtime.RequestDeviceMotionEvent();return this._accZ},
-TouchIndex(){return this._triggerIndex},TouchID(){return this._triggerId},WidthForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetWidth();else return 0},HeightForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetHeight();else return 0},PressureForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetPressure();else return 0}}};
-
-
-'use strict';{const C3=self.C3;const GESTURE_HOLD_THRESHOLD=15;const GESTURE_HOLD_TIMEOUT=500;const GESTURE_TAP_TIMEOUT=333;const GESTURE_DOUBLETAP_THRESHOLD=25;let lastTapX=-1E3;let lastTapY=-1E3;let lastTapTime=-1E4;C3.Plugins.Touch.TouchInfo=class TouchInfo extends C3.DefendedBase{constructor(){super();this._pointerId=0;this._startIndex=0;this._startTime=0;this._time=0;this._lastTime=0;this._startX=0;this._startY=0;this._x=0;this._y=0;this._lastX=0;this._lastY=0;this._width=0;this._height=0;this._pressure=
-0;this._hasTriggeredHold=false;this._isTooFarForHold=false}Release(){}Init(nowTime,x,y,id,index){this._pointerId=id;this._startIndex=index;this._time=nowTime;this._lastTime=nowTime;this._startTime=nowTime;this._startX=x;this._startY=y;this._x=x;this._y=y;this._lastX=x;this._lastY=y}Update(nowTime,x,y,width,height,pressure){this._lastTime=this._time;this._time=nowTime;this._lastX=this._x;this._lastY=this._y;this._x=x;this._y=y;this._width=width;this._height=height;this._pressure=pressure;if(!this._isTooFarForHold&&
-C3.distanceTo(this._startX,this._startY,this._x,this._y)>=GESTURE_HOLD_THRESHOLD)this._isTooFarForHold=true}GetId(){return this._pointerId}GetStartIndex(){return this._startIndex}GetTime(){return this._time}_SetLastTime(t){this._lastTime=t}GetX(){return this._x}GetY(){return this._y}GetSpeed(){const dist=C3.distanceTo(this._x,this._y,this._lastX,this._lastY);const dt=(this._time-this._lastTime)/1E3;if(dt>0)return dist/dt;else return 0}GetAngle(){return C3.angleTo(this._lastX,this._lastY,this._x,this._y)}GetWidth(){return this._width}GetHeight(){return this._height}GetPressure(){return this._pressure}ShouldTriggerHold(nowTime){if(this._hasTriggeredHold)return false;
-if(nowTime-this._startTime>=GESTURE_HOLD_TIMEOUT&&!this._isTooFarForHold&&C3.distanceTo(this._startX,this._startY,this._x,this._y)<GESTURE_HOLD_THRESHOLD){this._hasTriggeredHold=true;return true}return false}ShouldTriggerTap(nowTime){if(this._hasTriggeredHold)return"";if(nowTime-this._startTime<=GESTURE_TAP_TIMEOUT&&!this._isTooFarForHold&&C3.distanceTo(this._startX,this._startY,this._x,this._y)<GESTURE_HOLD_THRESHOLD)if(nowTime-lastTapTime<=GESTURE_TAP_TIMEOUT*2&&C3.distanceTo(lastTapX,lastTapY,
-this._x,this._y)<GESTURE_DOUBLETAP_THRESHOLD){lastTapX=-1E3;lastTapY=-1E3;lastTapTime=-1E4;return"double-tap"}else{lastTapX=this._x;lastTapY=this._y;lastTapTime=nowTime;return"single-tap"}return""}GetPositionForLayer(layout,layerNameOrNumber,getx){if(typeof layerNameOrNumber==="undefined"){const layer=layout.GetLayerByIndex(0);return layer.CanvasCssToLayer_DefaultTransform(this._x,this._y)[getx?0:1]}else{const layer=layout.GetLayer(layerNameOrNumber);if(layer)return layer.CanvasCssToLayer(this._x,
-this._y)[getx?0:1];else return 0}}}};
+'use strict';{const C3=self.C3;C3.Plugins.AJAX.Exps={LastData(){return this._lastData},Progress(){return this._progress},Tag(){return this._curTag}}};
 
 
 'use strict';{const C3=self.C3;C3.Plugins.Audio=class AudioPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
@@ -2699,31 +2678,53 @@ AddRemoteURL(url,type,name){this._remoteUrls.set(name.toLowerCase(),{url,type})}
 SampleRate(){return this._sampleRate},CurrentTime(){if(self["C3_GetAudioContextCurrentTime"])return self["C3_GetAudioContextCurrentTime"]();else return performance.now()/1E3}}};
 
 
-'use strict';{const C3=self.C3;const DOM_COMPONENT_ID="text-input";C3.Plugins.TextBox=class TextInputPlugin extends C3.SDKDOMPluginBase{constructor(opts){super(opts,DOM_COMPONENT_ID);this.AddElementMessageHandler("click",(sdkInst,e)=>sdkInst._OnClick(e));this.AddElementMessageHandler("dblclick",(sdkInst,e)=>sdkInst._OnDoubleClick(e));this.AddElementMessageHandler("change",(sdkInst,e)=>sdkInst._OnChange(e))}Release(){super.Release()}}};
+'use strict';{const C3=self.C3;C3.Plugins.Touch=class TouchPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.TextBox.Type=class TextInputType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}};
+'use strict';{const C3=self.C3;C3.Plugins.Touch.Type=class TouchType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}GetScriptInterfaceClass(){return self.ITouchObjectType}};let touchObjectType=null;function GetTouchSdkInstance(){return touchObjectType.GetSingleGlobalInstance().GetSdkInstance()}self.ITouchObjectType=class ITouchObjectType extends self.IObjectClass{constructor(objectType){super(objectType);touchObjectType=objectType;objectType.GetRuntime()._GetCommonScriptInterfaces().touch=
+this}requestPermission(type){const touchInst=GetTouchSdkInstance();if(type==="orientation")return touchInst._RequestPermission(0);else if(type==="motion")return touchInst._RequestPermission(1);else throw new Error("invalid type");}}};
 
 
-'use strict';{const C3=self.C3;const TEXT=0;const PLACEHOLDER=1;const TOOLTIP=2;const INITIALLY_VISIBLE=3;const ENABLE=4;const READ_ONLY=5;const SPELL_CHECK=6;const TYPE=7;const AUTO_FONT_SIZE=8;const ID=9;const DOM_COMPONENT_ID="text-input";const elemTypes=["text","password","email","number","tel","url","textarea","search"];C3.Plugins.TextBox.Instance=class TextInputInstance extends C3.SDKDOMInstanceBase{constructor(inst,properties){super(inst,DOM_COMPONENT_ID);this._text="";this._placeholder="";
-this._title="";this._isEnabled=true;this._isReadOnly=false;this._spellCheck=false;this._type="text";this._autoFontSize=true;this._maxLength=-1;this._id="";if(properties){this._text=properties[TEXT];this._placeholder=properties[PLACEHOLDER];this._title=properties[TOOLTIP];this.GetWorldInfo().SetVisible(properties[INITIALLY_VISIBLE]);this._isEnabled=properties[ENABLE];this._isReadOnly=properties[READ_ONLY];this._spellCheck=properties[SPELL_CHECK];this._type=elemTypes[properties[TYPE]];this._autoFontSize=
-properties[AUTO_FONT_SIZE];this._id=properties[ID]}this.CreateElement({"type":this._type,"id":this._id})}Release(){super.Release()}GetElementState(){return{"text":this._text,"placeholder":this._placeholder,"title":this._title,"isEnabled":this._isEnabled,"isReadOnly":this._isReadOnly,"spellCheck":this._spellCheck,"maxLength":this._maxLength}}async _OnClick(e){this.GetScriptInterface().dispatchEvent(C3.New(C3.Event,"click",true));await this.TriggerAsync(C3.Plugins.TextBox.Cnds.OnClicked)}async _OnDoubleClick(e){this.GetScriptInterface().dispatchEvent(C3.New(C3.Event,
-"dblclick",true));await this.TriggerAsync(C3.Plugins.TextBox.Cnds.OnDoubleClicked)}async _OnChange(e){this._text=e["text"];this.GetScriptInterface().dispatchEvent(C3.New(C3.Event,"change",true));await this.TriggerAsync(C3.Plugins.TextBox.Cnds.OnTextChanged)}_SetText(text){if(this._text===text)return;this._text=text;this.UpdateElementState()}_GetText(){return this._text}_SetPlaceholder(placeholder){if(this._placeholder===placeholder)return;this._placeholder=placeholder;this.UpdateElementState()}_GetPlaceholder(){return this._placeholder}_SetTooltip(title){if(this._title===
-title)return;this._title=title;this.UpdateElementState()}_GetTooltip(){return this._title}_SetEnabled(e){e=!!e;if(this._isEnabled===e)return;this._isEnabled=e;this.UpdateElementState()}_IsEnabled(){return this._isEnabled}_SetReadOnly(r){r=!!r;if(this._isReadOnly===r)return;this._isReadOnly=r;this.UpdateElementState()}_IsReadOnly(){return this._isReadOnly}_SetMaxLength(l){l=Math.max(+l,-1);if(this._maxLength===l)return;this._maxLength=l;this.UpdateElementState()}_GetMaxLength(){return this._maxLength}_ScrollToBottom(){this.PostToDOMElement("scroll-to-bottom")}Draw(renderer){}SaveToJson(){return{"t":this._text,
-"p":this._placeholder,"ti":this._title,"e":this._isEnabled,"r":this._isReadOnly,"sp":this._spellCheck,"ml":this._maxLength,"type":this._type,"id":this._id}}LoadFromJson(o){this._text=o["t"];this._placeholder=o["p"];this._title=o["ti"];this._isEnabled=o["e"];this._isReadOnly=o["r"];this._spellCheck=o["sp"];this._maxLength=o.hasOwnProperty("ml")?o["ml"]:-1;this._type=o["type"];this._id=o["id"];this.UpdateElementState()}GetPropertyValueByIndex(index){switch(index){case TEXT:return this._text;case PLACEHOLDER:return this._placeholder;
-case TOOLTIP:return this._title;case ENABLE:return this._isEnabled;case READ_ONLY:return this._isReadOnly;case SPELL_CHECK:return this._spellCheck;case AUTO_FONT_SIZE:return this._autoFontSize;case ID:return this._id}}SetPropertyValueByIndex(index,value){switch(index){case TEXT:if(this._text===value)return;this._text=value;this.UpdateElementState();break;case PLACEHOLDER:if(this._placeholder===value)return;this._placeholder=value;this.UpdateElementState();break;case TOOLTIP:if(this._title===value)return;
-this._title=value;this.UpdateElementState();break;case ENABLE:if(this._isEnabled===!!value)return;this._isEnabled=!!value;this.UpdateElementState();break;case READ_ONLY:if(this._isReadOnly===!!value)return;this._isReadOnly=!!value;this.UpdateElementState();break;case SPELL_CHECK:if(this._spellCheck===!!value)return;this._spellCheck=!!value;this.UpdateElementState();break;case AUTO_FONT_SIZE:this._autoFontSize=!!value;break;case ID:if(this._id===value)return;this._id=value;this.UpdateElementState();
-break}}GetDebuggerProperties(){const Acts=C3.Plugins.TextBox.Acts;const prefix="plugins.textbox";return[{title:prefix+".name",properties:[{name:prefix+".properties.text.name",value:this._text,onedit:v=>this.CallAction(Acts.SetText,v)},{name:prefix+".properties.enabled.name",value:this._isEnabled,onedit:v=>this.CallAction(Acts.SetEnabled,v)},{name:prefix+".properties.read-only.name",value:this._isReadOnly,onedit:v=>this.CallAction(Acts.SetReadOnly,v)}]}]}GetScriptInterfaceClass(){return self.ITextInputInstance}};
-const map=new WeakMap;self.ITextInputInstance=class ITextInputInstance extends self.IDOMInstance{constructor(){super();map.set(this,self.IInstance._GetInitInst().GetSdkInstance())}set text(str){map.get(this)._SetText(str)}get text(){return map.get(this)._GetText()}set placeholder(str){map.get(this)._SetPlaceholder(str)}get placeholder(){return map.get(this)._GetPlaceholder()}set tooltip(str){map.get(this)._SetTooltip(str)}get tooltip(){return map.get(this)._GetTooltip()}set isEnabled(e){map.get(this)._SetEnabled(e)}get isEnabled(){return map.get(this)._IsEnabled()}set isReadOnly(r){map.get(this)._SetReadOnly(r)}get isReadOnly(){return map.get(this)._IsReadOnly()}set maxLength(l){map.get(this)._SetMaxLength(l)}get maxLength(){return map.get(this)._GetMaxLength()}scrollToBottom(){map.get(this)._ScrollToBottom()}}};
+'use strict';{const C3=self.C3;const DOM_COMPONENT_ID="touch";C3.Plugins.Touch.Instance=class TouchInstance extends C3.SDKInstanceBase{constructor(inst,properties){super(inst,DOM_COMPONENT_ID);this._touches=new Map;this._useMouseInput=false;this._isMouseDown=false;this._orientCompassHeading=0;this._orientAlpha=0;this._orientBeta=0;this._orientGamma=0;this._accX=0;this._accY=0;this._accZ=0;this._accWithGX=0;this._accWithGY=0;this._accWithGZ=0;this._triggerIndex=0;this._triggerId=0;this._triggerPermission=
+0;this._curTouchX=0;this._curTouchY=0;this._getTouchIndex=0;this._permissionPromises=[];if(properties)this._useMouseInput=properties[0];this.AddDOMMessageHandler("permission-result",e=>this._OnPermissionResult(e));const rt=this.GetRuntime().Dispatcher();this._disposables=new C3.CompositeDisposable(C3.Disposable.From(rt,"pointerdown",e=>this._OnPointerDown(e.data)),C3.Disposable.From(rt,"pointermove",e=>this._OnPointerMove(e.data)),C3.Disposable.From(rt,"pointerup",e=>this._OnPointerUp(e.data,false)),
+C3.Disposable.From(rt,"pointercancel",e=>this._OnPointerUp(e.data,true)),C3.Disposable.From(rt,"deviceorientation",e=>this._OnDeviceOrientation(e.data)),C3.Disposable.From(rt,"deviceorientationabsolute",e=>this._OnDeviceOrientationAbsolute(e.data)),C3.Disposable.From(rt,"devicemotion",e=>this._OnDeviceMotion(e.data)),C3.Disposable.From(rt,"tick2",e=>this._OnTick2()))}Release(){this._touches.clear();super.Release()}_OnPointerDown(e){if(e["pointerType"]==="mouse")if(this._useMouseInput)this._isMouseDown=
+true;else return;const pointerId=e["pointerId"];if(this._touches.has(pointerId))return;const x=e["pageX"]-this._runtime.GetCanvasClientX();const y=e["pageY"]-this._runtime.GetCanvasClientY();const nowTime=e["timeStamp"];const index=this._touches.size;this._triggerIndex=index;this._triggerId=pointerId;const touchInfo=C3.New(C3.Plugins.Touch.TouchInfo);touchInfo.Init(nowTime,x,y,pointerId,index);this._touches.set(pointerId,touchInfo);this.Trigger(C3.Plugins.Touch.Cnds.OnNthTouchStart);this.Trigger(C3.Plugins.Touch.Cnds.OnTouchStart);
+this._curTouchX=x;this._curTouchY=y;this.Trigger(C3.Plugins.Touch.Cnds.OnTouchObject)}_OnPointerMove(e){if(e["pointerType"]==="mouse"&&!this._isMouseDown)return;const touchInfo=this._touches.get(e["pointerId"]);if(!touchInfo)return;const nowTime=e["timeStamp"];if(nowTime-touchInfo.GetTime()<2)return;const x=e["pageX"]-this._runtime.GetCanvasClientX();const y=e["pageY"]-this._runtime.GetCanvasClientY();touchInfo.Update(nowTime,x,y,e["width"],e["height"],e["pressure"])}_OnPointerUp(e,isCancel){if(e["pointerType"]===
+"mouse")if(this._isMouseDown)this._isMouseDown=false;else return;const nowTime=e["timeStamp"];const pointerId=e["pointerId"];const touchInfo=this._touches.get(pointerId);if(!touchInfo)return;this._triggerIndex=touchInfo.GetStartIndex();this._triggerId=touchInfo.GetId();this.Trigger(C3.Plugins.Touch.Cnds.OnNthTouchEnd);this.Trigger(C3.Plugins.Touch.Cnds.OnTouchEnd);if(!isCancel){const tap=touchInfo.ShouldTriggerTap(nowTime);if(tap==="single-tap"){this.Trigger(C3.Plugins.Touch.Cnds.OnTapGesture);this._curTouchX=
+touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnTapGestureObject)}else if(tap==="double-tap"){this.Trigger(C3.Plugins.Touch.Cnds.OnDoubleTapGesture);this._curTouchX=touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnDoubleTapGestureObject)}}touchInfo.Release();this._touches.delete(pointerId)}_RequestPermission(type){this._PostToDOMMaybeSync("request-permission",{"type":type});return new Promise((resolve,reject)=>{this._permissionPromises.push({type,
+resolve,reject})})}_OnPermissionResult(e){const isGranted=e["result"];const type=e["type"];this._triggerPermission=type;const toResolve=this._permissionPromises.filter(o=>o.type===type);for(const o of toResolve)o.resolve(isGranted?"granted":"denied");this._permissionPromises=this._permissionPromises.filter(o=>o.type!==type);if(isGranted){this.Trigger(C3.Plugins.Touch.Cnds.OnPermissionGranted);if(type===0)this._runtime.RequestDeviceOrientationEvent();else this._runtime.RequestDeviceMotionEvent()}else this.Trigger(C3.Plugins.Touch.Cnds.OnPermissionDenied)}_OnDeviceOrientation(e){if(typeof e["webkitCompassHeading"]===
+"number")this._orientCompassHeading=e["webkitCompassHeading"];else if(e["absolute"])this._orientCompassHeading=e["alpha"];this._orientAlpha=e["alpha"];this._orientBeta=e["beta"];this._orientGamma=e["gamma"]}_OnDeviceOrientationAbsolute(e){this._orientCompassHeading=e["alpha"]}_OnDeviceMotion(e){const acc=e["acceleration"];if(acc){this._accX=acc["x"];this._accY=acc["y"];this._accZ=acc["z"]}const withG=e["accelerationIncludingGravity"];if(withG){this._accWithGX=withG["x"];this._accWithGY=withG["y"];
+this._accWithGZ=withG["z"]}}_OnTick2(){const nowTime=performance.now();let index=0;for(const touchInfo of this._touches.values()){if(touchInfo.GetTime()<=nowTime-50)touchInfo._SetLastTime(nowTime);if(touchInfo.ShouldTriggerHold(nowTime)){this._triggerIndex=touchInfo.GetStartIndex();this._triggerId=touchInfo.GetId();this._getTouchIndex=index;this.Trigger(C3.Plugins.Touch.Cnds.OnHoldGesture);this._curTouchX=touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnHoldGestureObject);
+this._getTouchIndex=0}++index}}_GetTouchByIndex(index){index=Math.floor(index);for(const touchInfo of this._touches.values()){if(index===0)return touchInfo;--index}return null}_IsClientPosOnCanvas(touchX,touchY){return touchX>=0&&touchY>=0&&touchX<this._runtime.GetCanvasCssWidth()&&touchY<this._runtime.GetCanvasCssHeight()}GetDebuggerProperties(){const prefix="plugins.touch.debugger";return[{title:prefix+".touches",properties:[...this._touches.values()].map(ti=>({name:"$"+ti.GetId(),value:ti.GetX()+
+", "+ti.GetY()}))}]}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.TextBox.Cnds={CompareText(text,case_){if(case_===0)return C3.equalsNoCase(this._text,text);else return this._text===text},OnTextChanged(){return true},OnClicked(){return true},OnDoubleClicked(){return true}}};
+'use strict';{const C3=self.C3;const tempArr=[];C3.Plugins.Touch.Cnds={OnTouchStart(){return true},OnTouchEnd(){return true},IsInTouch(){return this._touches.size>0},OnTouchObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},IsTouchingObject(objectClass){if(!objectClass)return false;const sol=objectClass.GetCurrentSol();
+const instances=sol.GetInstances();for(const inst of instances){const wi=inst.GetWorldInfo();const layer=wi.GetLayer();for(const touchInfo of this._touches.values()){if(!this._IsClientPosOnCanvas(touchInfo.GetX(),touchInfo.GetY()))continue;const [px,py]=layer.CanvasCssToLayer(touchInfo.GetX(),touchInfo.GetY(),wi.GetTotalZElevation());if(wi.ContainsPoint(px,py)){tempArr.push(inst);break}}}if(tempArr.length){sol.SetArrayPicked(tempArr);objectClass.ApplySolToContainer();C3.clearArray(tempArr);return true}else return false},
+CompareTouchSpeed(index,cmp,s){const touchInfo=this._GetTouchByIndex(index);if(!touchInfo)return false;return C3.compare(touchInfo.GetSpeed(),cmp,s)},OrientationSupported(){return true},MotionSupported(){return true},CompareOrientation(orientation,cmp,a){this._runtime.RequestDeviceOrientationEvent();let v=0;if(orientation===0)v=this._orientAlpha;else if(orientation===1)v=this._orientBeta;else v=this._orientGamma;return C3.compare(v,cmp,a)},CompareAcceleration(a,cmp,x){this._runtime.RequestDeviceMotionEvent();
+let v=0;if(a===0)v=this._accWithGX;else if(a===1)v=this._accWithGY;else if(a===2)v=this._accWithGZ;else if(a===3)v=this._accX;else if(a===4)v=this._accY;else v=this._accZ;return C3.compare(v,cmp,x)},OnNthTouchStart(index){index=Math.floor(index);return index===this._triggerIndex},OnNthTouchEnd(index){index=Math.floor(index);return index===this._triggerIndex},HasNthTouch(index){index=Math.floor(index);return this._touches.size>=index+1},OnHoldGesture(){return true},OnTapGesture(){return true},OnDoubleTapGesture(){return true},
+OnHoldGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},OnTapGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,
+this._curTouchY,false)},OnDoubleTapGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},OnPermissionGranted(type){return this._triggerPermission===type},OnPermissionDenied(type){return this._triggerPermission===type}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.TextBox.Acts={SetText(text){this._SetText(text)},AppendText(text){if(!text)return;this._SetText(this._GetText()+text)},SetPlaceholder(placeholder){this._SetPlaceholder(placeholder)},SetTooltip(title){this._SetTooltip(title)},SetReadOnly(r){this._SetReadOnly(r===0)},ScrollToBottom(){this._ScrollToBottom()},SetMaxLength(l){this._SetMaxLength(l)}}};
+'use strict';{const C3=self.C3;C3.Plugins.Touch.Acts={RequestPermission(type){this._RequestPermission(type)}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.TextBox.Exps={Text(){return this._GetText()},MaxLength(){return this._GetMaxLength()}}};
+'use strict';{const C3=self.C3;C3.Plugins.Touch.Exps={TouchCount(){return this._touches.size},X(layerParam){const touchInfo=this._GetTouchByIndex(this._getTouchIndex);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},Y(layerParam){const touchInfo=this._GetTouchByIndex(this._getTouchIndex);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},XAt(index,layerParam){const touchInfo=
+this._GetTouchByIndex(index);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},YAt(index,layerParam){const touchInfo=this._GetTouchByIndex(index);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},XForID(id,layerParam){const touchInfo=this._touches.get(id);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},YForID(id,layerParam){const touchInfo=
+this._touches.get(id);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},AbsoluteX(){const touchInfo=this._GetTouchByIndex(0);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteY(){const touchInfo=this._GetTouchByIndex(0);if(touchInfo)return touchInfo.GetY();else return 0},AbsoluteXAt(index){const touchInfo=this._GetTouchByIndex(index);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteYAt(index){const touchInfo=this._GetTouchByIndex(index);
+if(touchInfo)return touchInfo.GetY();else return 0},AbsoluteXForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteYForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetY();else return 0},SpeedAt(index){const touchInfo=this._GetTouchByIndex(index);if(touchInfo)return touchInfo.GetSpeed();else return 0},SpeedForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetSpeed();else return 0},AngleAt(index){const touchInfo=
+this._GetTouchByIndex(index);if(touchInfo)return C3.toDegrees(touchInfo.GetAngle());else return 0},AngleForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return C3.toDegrees(touchInfo.GetAngle());else return 0},CompassHeading(){this._runtime.RequestDeviceOrientationEvent();return this._orientCompassHeading},Alpha(){this._runtime.RequestDeviceOrientationEvent();return this._orientAlpha},Beta(){this._runtime.RequestDeviceOrientationEvent();return this._orientBeta},Gamma(){this._runtime.RequestDeviceOrientationEvent();
+return this._orientGamma},AccelerationXWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGX},AccelerationYWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGY},AccelerationZWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGZ},AccelerationX(){this._runtime.RequestDeviceMotionEvent();return this._accX},AccelerationY(){this._runtime.RequestDeviceMotionEvent();return this._accY},AccelerationZ(){this._runtime.RequestDeviceMotionEvent();return this._accZ},
+TouchIndex(){return this._triggerIndex},TouchID(){return this._triggerId},WidthForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetWidth();else return 0},HeightForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetHeight();else return 0},PressureForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetPressure();else return 0}}};
+
+
+'use strict';{const C3=self.C3;const GESTURE_HOLD_THRESHOLD=15;const GESTURE_HOLD_TIMEOUT=500;const GESTURE_TAP_TIMEOUT=333;const GESTURE_DOUBLETAP_THRESHOLD=25;let lastTapX=-1E3;let lastTapY=-1E3;let lastTapTime=-1E4;C3.Plugins.Touch.TouchInfo=class TouchInfo extends C3.DefendedBase{constructor(){super();this._pointerId=0;this._startIndex=0;this._startTime=0;this._time=0;this._lastTime=0;this._startX=0;this._startY=0;this._x=0;this._y=0;this._lastX=0;this._lastY=0;this._width=0;this._height=0;this._pressure=
+0;this._hasTriggeredHold=false;this._isTooFarForHold=false}Release(){}Init(nowTime,x,y,id,index){this._pointerId=id;this._startIndex=index;this._time=nowTime;this._lastTime=nowTime;this._startTime=nowTime;this._startX=x;this._startY=y;this._x=x;this._y=y;this._lastX=x;this._lastY=y}Update(nowTime,x,y,width,height,pressure){this._lastTime=this._time;this._time=nowTime;this._lastX=this._x;this._lastY=this._y;this._x=x;this._y=y;this._width=width;this._height=height;this._pressure=pressure;if(!this._isTooFarForHold&&
+C3.distanceTo(this._startX,this._startY,this._x,this._y)>=GESTURE_HOLD_THRESHOLD)this._isTooFarForHold=true}GetId(){return this._pointerId}GetStartIndex(){return this._startIndex}GetTime(){return this._time}_SetLastTime(t){this._lastTime=t}GetX(){return this._x}GetY(){return this._y}GetSpeed(){const dist=C3.distanceTo(this._x,this._y,this._lastX,this._lastY);const dt=(this._time-this._lastTime)/1E3;if(dt>0)return dist/dt;else return 0}GetAngle(){return C3.angleTo(this._lastX,this._lastY,this._x,this._y)}GetWidth(){return this._width}GetHeight(){return this._height}GetPressure(){return this._pressure}ShouldTriggerHold(nowTime){if(this._hasTriggeredHold)return false;
+if(nowTime-this._startTime>=GESTURE_HOLD_TIMEOUT&&!this._isTooFarForHold&&C3.distanceTo(this._startX,this._startY,this._x,this._y)<GESTURE_HOLD_THRESHOLD){this._hasTriggeredHold=true;return true}return false}ShouldTriggerTap(nowTime){if(this._hasTriggeredHold)return"";if(nowTime-this._startTime<=GESTURE_TAP_TIMEOUT&&!this._isTooFarForHold&&C3.distanceTo(this._startX,this._startY,this._x,this._y)<GESTURE_HOLD_THRESHOLD)if(nowTime-lastTapTime<=GESTURE_TAP_TIMEOUT*2&&C3.distanceTo(lastTapX,lastTapY,
+this._x,this._y)<GESTURE_DOUBLETAP_THRESHOLD){lastTapX=-1E3;lastTapY=-1E3;lastTapTime=-1E4;return"double-tap"}else{lastTapX=this._x;lastTapY=this._y;lastTapTime=nowTime;return"single-tap"}return""}GetPositionForLayer(layout,layerNameOrNumber,getx){if(typeof layerNameOrNumber==="undefined"){const layer=layout.GetLayerByIndex(0);return layer.CanvasCssToLayer_DefaultTransform(this._x,this._y)[getx?0:1]}else{const layer=layout.GetLayer(layerNameOrNumber);if(layer)return layer.CanvasCssToLayer(this._x,
+this._y)[getx?0:1];else return 0}}}};
 
 
 'use strict';{const C3=self.C3;C3.Plugins.Text=class TextPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
@@ -2769,32 +2770,28 @@ SetWrapping(w){this._SetWrapByWord(w===0)}}};
 'use strict';{const C3=self.C3;C3.Plugins.Text.Exps={Text(){return this._text},PlainText(){if(this._enableBBcode)return C3.BBString.StripAnyTags(this._text);else return this._text},FaceName(){return this._faceName},FaceSize(){return this._ptSize},TextWidth(){this._UpdateTextSize();return this._rendererText.GetTextWidth()},TextHeight(){this._UpdateTextSize();return this._rendererText.GetTextHeight()},LineHeight(){return this._lineHeightOffset}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.AJAX=class AJAXPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
+'use strict';{const C3=self.C3;C3.Behaviors.Fade=class FadeBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.AJAX.Type=class AJAXType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}};
+'use strict';{const C3=self.C3;C3.Behaviors.Fade.Type=class FadeType extends C3.SDKBehaviorTypeBase{constructor(behaviorType){super(behaviorType)}Release(){super.Release()}OnCreate(){}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.AJAX.Instance=class AJAXInstance extends C3.SDKInstanceBase{constructor(inst,properties){super(inst);this._lastData="";this._curTag="";this._progress=0;this._timeout=-1;this._nextRequestHeaders=new Map;this._nextReponseBinaryData=null;this._nextRequestOverrideMimeType="";this._nwjsFs=null;this._nwjsPath=null;this._nwjsAppFolder=null;this._isNWjs=this._runtime.GetExportType()==="nwjs";if(this._isNWjs){this._nwjsFs=require("fs");this._nwjsPath=require("path");
-const process=self["process"]||nw["process"];this._nwjsAppFolder=this._nwjsPath["dirname"](process["execPath"])+"\\"}}Release(){super.Release()}async _TriggerError(tag,url,err){console.error(`[Construct 3] AJAX request to '${url}' (tag '${tag}') failed: `,err);this._curTag=tag;await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnAnyError);await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnError)}async _TriggerComplete(tag){this._curTag=tag;await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnAnyComplete);await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnComplete)}async _OnProgress(tag,
-e){if(!e["lengthComputable"])return;this._progress=e["loaded"]/e["total"];this._curTag=tag;await this.TriggerAsync(C3.Plugins.AJAX.Cnds.OnProgress)}_OnError(tag,url,err){if(!this._isNWjs){this._TriggerError(tag,url,err);return}const fs=this._nwjsFs;const filePath=this._nwjsAppFolder+url;if(fs["existsSync"](filePath))fs["readFile"](filePath,{"encoding":"utf8"},(err2,data)=>{if(err2)this._TriggerError(tag,url,err2);else{this._lastData=data.replace(/\r\n/g,"\n");this._TriggerComplete(tag)}});else this._TriggerError(tag,
-url,err)}async _DoCordovaRequest(tag,file){const assetManager=this._runtime.GetAssetManager();const binaryData=this._nextReponseBinaryData;this._nextReponseBinaryData=null;try{if(binaryData){const buffer=await assetManager.CordovaFetchLocalFileAsArrayBuffer(file);binaryData.SetArrayBufferTransfer(buffer);this._lastData="";this._TriggerComplete(tag)}else{const data=await assetManager.CordovaFetchLocalFileAsText(file);this._lastData=data.replace(/\r\n/g,"\n");this._TriggerComplete(tag)}}catch(err){this._TriggerError(tag,
-file,err)}}_DoRequest(tag,url,method,data){return new Promise(resolve=>{const errorFunc=err=>{this._OnError(tag,url,err);resolve()};const binaryData=this._nextReponseBinaryData;this._nextReponseBinaryData=null;try{const request=new XMLHttpRequest;request.onreadystatechange=()=>{if(request.readyState===4){if(binaryData)this._lastData="";else this._lastData=(request.responseText||"").replace(/\r\n/g,"\n");if(request.status>=400)this._TriggerError(tag,url,request.status+request.statusText);else{const hasData=
-this._lastData.length||binaryData&&request.response instanceof ArrayBuffer;if((!this._isNWjs||hasData)&&!(!this._isNWjs&&request.status===0&&!hasData)){if(binaryData)binaryData.SetArrayBufferTransfer(request.response);this._TriggerComplete(tag)}}resolve()}};request.onerror=errorFunc;request.ontimeout=errorFunc;request.onabort=errorFunc;request["onprogress"]=e=>this._OnProgress(tag,e);request.open(method,url);if(this._timeout>=0&&typeof request["timeout"]!=="undefined")request["timeout"]=this._timeout;
-request.responseType=binaryData?"arraybuffer":"text";if(data&&!this._nextRequestHeaders.has("Content-Type"))if(typeof data!=="string")request["setRequestHeader"]("Content-Type","application/octet-stream");else request["setRequestHeader"]("Content-Type","application/x-www-form-urlencoded");for(const [header,value]of this._nextRequestHeaders)try{request["setRequestHeader"](header,value)}catch(err){console.error(`[Construct 3] AJAX: Failed to set header '${header}: ${value}': `,err)}this._nextRequestHeaders.clear();
-if(this._nextRequestOverrideMimeType){try{request["overrideMimeType"](this._nextRequestOverrideMimeType)}catch(err){console.error(`[Construct 3] AJAX: failed to override MIME type: `,err)}this._nextRequestOverrideMimeType=""}if(data)request.send(data);else request.send()}catch(err){errorFunc(err)}})}GetDebuggerProperties(){const prefix="plugins.ajax.debugger";return[{title:prefix+".title",properties:[{name:prefix+".last-data",value:this._lastData}]}]}SaveToJson(){return{"lastData":this._lastData}}LoadFromJson(o){this._lastData=
-o["lastData"];this._curTag="";this._progress=0}}};
+'use strict';{const C3=self.C3;const FADE_IN_TIME=0;const WAIT_TIME=1;const FADE_OUT_TIME=2;const DESTROY=3;const ACTIVE_AT_START=4;C3.Behaviors.Fade.Instance=class FadeInstance extends C3.SDKBehaviorInstanceBase{constructor(behInst,properties){super(behInst);this._fadeInTime=0;this._waitTime=0;this._fadeOutTime=0;this._destroy=true;this._activeAtStart=true;this._setMaxOpacity=false;this._stage=0;this._stageTime=C3.New(C3.KahanSum);this._maxOpacity=this._inst.GetWorldInfo().GetOpacity()||1;if(properties){this._fadeInTime=
+properties[FADE_IN_TIME];this._waitTime=properties[WAIT_TIME];this._fadeOutTime=properties[FADE_OUT_TIME];this._destroy=!!properties[DESTROY];this._activeAtStart=!!properties[ACTIVE_AT_START];this._stage=this._activeAtStart?0:3}if(this._activeAtStart)if(this._fadeInTime===0){this._stage=1;if(this._waitTime===0)this._stage=2}else{this._inst.GetWorldInfo().SetOpacity(0);this._runtime.UpdateRender()}this._StartTicking()}Release(){super.Release()}SaveToJson(){return{"fit":this._fadeInTime,"wt":this._waitTime,
+"fot":this._fadeOutTime,"d":this._destroy,"s":this._stage,"st":this._stageTime.Get(),"mo":this._maxOpacity}}LoadFromJson(o){this._fadeInTime=o["fit"];this._waitTime=o["wt"];this._fadeOutTime=o["fot"];this._destroy=o["d"];this._stage=o["s"];this._stageTime.Set(o["st"]);this._maxOpacity=o["mo"]}Tick(){const dt=this._runtime.GetDt(this._inst);this._stageTime.Add(dt);const wi=this._inst.GetWorldInfo();if(this._stage===0){wi.SetOpacity(this._stageTime.Get()/this._fadeInTime*this._maxOpacity);this._runtime.UpdateRender();
+if(wi.GetOpacity()>=this._maxOpacity){wi.SetOpacity(this._maxOpacity);this._stage=1;this._stageTime.Reset();this.Trigger(C3.Behaviors.Fade.Cnds.OnFadeInEnd)}}if(this._stage===1)if(this._stageTime.Get()>=this._waitTime){this._stage=2;this._stageTime.Reset();this.Trigger(C3.Behaviors.Fade.Cnds.OnWaitEnd)}if(this._stage===2)if(this._fadeOutTime!==0){wi.SetOpacity(this._maxOpacity-this._stageTime.Get()/this._fadeOutTime*this._maxOpacity);this._runtime.UpdateRender();if(wi.GetOpacity()<=0){this._stage=
+3;this._stageTime.Reset();this.Trigger(C3.Behaviors.Fade.Cnds.OnFadeOutEnd);if(this._destroy)this._runtime.DestroyInstance(this._inst)}}}Start(){this._stage=0;this._stageTime.Reset();if(this._fadeInTime===0){this._stage=1;if(this._waitTime===0)this._stage=2}else{this._inst.GetWorldInfo().SetOpacity(0);this._runtime.UpdateRender()}}GetPropertyValueByIndex(index){switch(index){case FADE_IN_TIME:return this._fadeInTime;case WAIT_TIME:return this._waitTime;case FADE_OUT_TIME:return this._fadeOutTime;
+case DESTROY:return this._destroy}}SetPropertyValueByIndex(index,value){switch(index){case FADE_IN_TIME:this._fadeInTime=value;break;case WAIT_TIME:this._waitTime=value;break;case FADE_OUT_TIME:this._fadeOutTime=value;break;case DESTROY:this._destroy=!!value;break}}GetDebuggerProperties(){const prefix="behaviors.fade";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".properties.fade-in-time.name",value:this._fadeInTime,onedit:v=>this._fadeInTime=v},{name:prefix+".properties.wait-time.name",
+value:this._waitTime,onedit:v=>this._waitTime=v},{name:prefix+".properties.fade-out-time.name",value:this._fadeOutTime,onedit:v=>this._fadeOutTime=v},{name:prefix+".debugger.stage",value:[prefix+".debugger."+["fade-in","wait","fade-out","done"][this._stage]]}]}]}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.AJAX.Cnds={OnComplete(tag){return C3.equalsNoCase(this._curTag,tag)},OnAnyComplete(){return true},OnError(tag){return C3.equalsNoCase(this._curTag,tag)},OnAnyError(){return true},OnProgress(tag){return C3.equalsNoCase(this._curTag,tag)}}};
+'use strict';{const C3=self.C3;C3.Behaviors.Fade.Cnds={OnFadeOutEnd(){return true},OnFadeInEnd(){return true},OnWaitEnd(){return true}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.AJAX.Acts={async Request(tag,url){if(this._runtime.IsCordova()&&C3.IsRelativeURL(url)&&location.protocol==="file:")await this._DoCordovaRequest(tag,url);else if(this._runtime.IsPreview()&&C3.IsRelativeURL(url)){const localurl=this._runtime.GetAssetManager().GetLocalUrlAsBlobUrl(url.toLowerCase());await this._DoRequest(tag,localurl,"GET",null)}else await this._DoRequest(tag,url,"GET",null)},async RequestFile(tag,file){if(this._runtime.IsCordova()&&location.protocol===
-"file:")await this._DoCordovaRequest(tag,file);else await this._DoRequest(tag,this._runtime.GetAssetManager().GetLocalUrlAsBlobUrl(file),"GET",null)},async Post(tag,url,data,method){await this._DoRequest(tag,url,method,data)},async PostBinary(tag,url,objectClass,method){if(!objectClass)return;const target=objectClass.GetFirstPicked(this._inst);if(!target)return;const sdkInst=target.GetSdkInstance();const buffer=sdkInst.GetArrayBufferReadOnly();await this._DoRequest(tag,url,method,buffer)},SetTimeout(t){this._timeout=
-t*1E3},SetHeader(n,v){this._nextRequestHeaders.set(n,v)},SetResponseBinary(objectClass){if(!objectClass)return;const inst=objectClass.GetFirstPicked(this._inst);if(!inst)return;this._nextReponseBinaryData=inst.GetSdkInstance()},OverrideMIMEType(m){this._nextRequestOverrideMimeType=m}}};
+'use strict';{const C3=self.C3;C3.Behaviors.Fade.Acts={StartFade(){if(!this._activeAtStart&&!this._setMaxOpacity){this._maxOpacity=this._inst.GetWorldInfo().GetOpacity()||1;this._setMaxOpacity=true}if(this._stage===3)this.Start()},RestartFade(){this.Start()},SetFadeInTime(t){if(t<0)t=0;this._fadeInTime=t},SetWaitTime(t){if(t<0)t=0;this._waitTime=t},SetFadeOutTime(t){if(t<0)t=0;this._fadeOutTime=t}}};
 
 
-'use strict';{const C3=self.C3;C3.Plugins.AJAX.Exps={LastData(){return this._lastData},Progress(){return this._progress},Tag(){return this._curTag}}};
+'use strict';{const C3=self.C3;C3.Behaviors.Fade.Exps={FadeInTime(){return this._fadeInTime},WaitTime(){return this._waitTime},FadeOutTime(){return this._fadeOutTime}}};
 
 
 'use strict';{const C3=self.C3;C3.Behaviors.MoveTo=class MoveToBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}};
@@ -2836,48 +2833,26 @@ if(!timeline)return;C3.Behaviors.MoveTo.Acts.MoveAlongTimeline.call(this,timelin
 WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 
 
-'use strict';{const C3=self.C3;C3.Behaviors.Fade=class FadeBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}};
-
-
-'use strict';{const C3=self.C3;C3.Behaviors.Fade.Type=class FadeType extends C3.SDKBehaviorTypeBase{constructor(behaviorType){super(behaviorType)}Release(){super.Release()}OnCreate(){}}};
-
-
-'use strict';{const C3=self.C3;const FADE_IN_TIME=0;const WAIT_TIME=1;const FADE_OUT_TIME=2;const DESTROY=3;const ACTIVE_AT_START=4;C3.Behaviors.Fade.Instance=class FadeInstance extends C3.SDKBehaviorInstanceBase{constructor(behInst,properties){super(behInst);this._fadeInTime=0;this._waitTime=0;this._fadeOutTime=0;this._destroy=true;this._activeAtStart=true;this._setMaxOpacity=false;this._stage=0;this._stageTime=C3.New(C3.KahanSum);this._maxOpacity=this._inst.GetWorldInfo().GetOpacity()||1;if(properties){this._fadeInTime=
-properties[FADE_IN_TIME];this._waitTime=properties[WAIT_TIME];this._fadeOutTime=properties[FADE_OUT_TIME];this._destroy=!!properties[DESTROY];this._activeAtStart=!!properties[ACTIVE_AT_START];this._stage=this._activeAtStart?0:3}if(this._activeAtStart)if(this._fadeInTime===0){this._stage=1;if(this._waitTime===0)this._stage=2}else{this._inst.GetWorldInfo().SetOpacity(0);this._runtime.UpdateRender()}this._StartTicking()}Release(){super.Release()}SaveToJson(){return{"fit":this._fadeInTime,"wt":this._waitTime,
-"fot":this._fadeOutTime,"d":this._destroy,"s":this._stage,"st":this._stageTime.Get(),"mo":this._maxOpacity}}LoadFromJson(o){this._fadeInTime=o["fit"];this._waitTime=o["wt"];this._fadeOutTime=o["fot"];this._destroy=o["d"];this._stage=o["s"];this._stageTime.Set(o["st"]);this._maxOpacity=o["mo"]}Tick(){const dt=this._runtime.GetDt(this._inst);this._stageTime.Add(dt);const wi=this._inst.GetWorldInfo();if(this._stage===0){wi.SetOpacity(this._stageTime.Get()/this._fadeInTime*this._maxOpacity);this._runtime.UpdateRender();
-if(wi.GetOpacity()>=this._maxOpacity){wi.SetOpacity(this._maxOpacity);this._stage=1;this._stageTime.Reset();this.Trigger(C3.Behaviors.Fade.Cnds.OnFadeInEnd)}}if(this._stage===1)if(this._stageTime.Get()>=this._waitTime){this._stage=2;this._stageTime.Reset();this.Trigger(C3.Behaviors.Fade.Cnds.OnWaitEnd)}if(this._stage===2)if(this._fadeOutTime!==0){wi.SetOpacity(this._maxOpacity-this._stageTime.Get()/this._fadeOutTime*this._maxOpacity);this._runtime.UpdateRender();if(wi.GetOpacity()<=0){this._stage=
-3;this._stageTime.Reset();this.Trigger(C3.Behaviors.Fade.Cnds.OnFadeOutEnd);if(this._destroy)this._runtime.DestroyInstance(this._inst)}}}Start(){this._stage=0;this._stageTime.Reset();if(this._fadeInTime===0){this._stage=1;if(this._waitTime===0)this._stage=2}else{this._inst.GetWorldInfo().SetOpacity(0);this._runtime.UpdateRender()}}GetPropertyValueByIndex(index){switch(index){case FADE_IN_TIME:return this._fadeInTime;case WAIT_TIME:return this._waitTime;case FADE_OUT_TIME:return this._fadeOutTime;
-case DESTROY:return this._destroy}}SetPropertyValueByIndex(index,value){switch(index){case FADE_IN_TIME:this._fadeInTime=value;break;case WAIT_TIME:this._waitTime=value;break;case FADE_OUT_TIME:this._fadeOutTime=value;break;case DESTROY:this._destroy=!!value;break}}GetDebuggerProperties(){const prefix="behaviors.fade";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".properties.fade-in-time.name",value:this._fadeInTime,onedit:v=>this._fadeInTime=v},{name:prefix+".properties.wait-time.name",
-value:this._waitTime,onedit:v=>this._waitTime=v},{name:prefix+".properties.fade-out-time.name",value:this._fadeOutTime,onedit:v=>this._fadeOutTime=v},{name:prefix+".debugger.stage",value:[prefix+".debugger."+["fade-in","wait","fade-out","done"][this._stage]]}]}]}}};
-
-
-'use strict';{const C3=self.C3;C3.Behaviors.Fade.Cnds={OnFadeOutEnd(){return true},OnFadeInEnd(){return true},OnWaitEnd(){return true}}};
-
-
-'use strict';{const C3=self.C3;C3.Behaviors.Fade.Acts={StartFade(){if(!this._activeAtStart&&!this._setMaxOpacity){this._maxOpacity=this._inst.GetWorldInfo().GetOpacity()||1;this._setMaxOpacity=true}if(this._stage===3)this.Start()},RestartFade(){this.Start()},SetFadeInTime(t){if(t<0)t=0;this._fadeInTime=t},SetWaitTime(t){if(t<0)t=0;this._waitTime=t},SetFadeOutTime(t){if(t<0)t=0;this._fadeOutTime=t}}};
-
-
-'use strict';{const C3=self.C3;C3.Behaviors.Fade.Exps={FadeInTime(){return this._fadeInTime},WaitTime(){return this._waitTime},FadeOutTime(){return this._fadeOutTime}}};
-
-
 "use strict"
 {
 	const C3 = self.C3;
 	self.C3_GetObjectRefTable = function () {
 		return [
 		C3.Plugins.Sprite,
-		C3.Behaviors.MoveTo,
 		C3.Behaviors.Fade,
-		C3.Plugins.Touch,
-		C3.Plugins.Audio,
-		C3.Plugins.TextBox,
-		C3.Plugins.Text,
 		C3.Plugins.AJAX,
+		C3.Plugins.Audio,
+		C3.Plugins.Touch,
+		C3.Behaviors.MoveTo,
+		C3.Plugins.Text,
 		C3.Plugins.System.Cnds.OnLayoutStart,
+		C3.Plugins.System.Acts.SetVar,
 		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.System.Acts.AddVar,
 		C3.Plugins.System.Acts.SetBoolVar,
 		C3.Plugins.Sprite.Acts.SetBoolInstanceVar,
+		C3.Plugins.Sprite.Acts.StopAnim,
+		C3.Plugins.System.Cnds.IsGroupActive,
 		C3.Plugins.Audio.Cnds.OnEnded,
 		C3.Behaviors.MoveTo.Acts.MoveToPosition,
 		C3.Plugins.Sprite.Acts.SetAnim,
@@ -2885,56 +2860,243 @@ value:this._waitTime,onedit:v=>this._waitTime=v},{name:prefix+".properties.fade-
 		C3.Plugins.Touch.Cnds.OnTapGestureObject,
 		C3.Plugins.System.Cnds.CompareBoolVar,
 		C3.Plugins.Audio.Acts.Stop,
+		C3.Plugins.Sprite.Acts.SetAnimFrame,
+		C3.Plugins.Sprite.Acts.SetPos,
+		C3.Plugins.Sprite.Exps.X,
+		C3.Plugins.Sprite.Exps.Y,
 		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
 		C3.Plugins.System.Cnds.TriggerOnce,
 		C3.Behaviors.Fade.Acts.StartFade,
+		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.Sprite.Acts.SetVisible,
 		C3.Behaviors.Fade.Acts.RestartFade,
 		C3.Plugins.Sprite.Cnds.IsVisible,
 		C3.Plugins.System.Acts.RestartLayout,
 		C3.Plugins.System.Acts.GoToLayout,
 		C3.Plugins.System.Cnds.Every,
-		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.System.Cnds.OnLayoutEnd,
+		C3.Plugins.Audio.Cnds.IsTagPlaying,
+		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.Text.Acts.SetText
 		];
 	};
 	self.C3_JsPropNameTable = [
 		{Tapped: 0},
-		{MoveTo: 0},
-		{Fade: 0},
-		{VB_Bush_Image: 0},
-		{VB_Fish_Image: 0},
-		{VB_Shark_Image: 0},
-		{VB_Sheep_Image: 0},
-		{VB_Shelf_Image: 0},
-		{VB_Shell_Image: 0},
-		{VB_Shirt_Image: 0},
-		{VB_Shop_Image: 0},
+		{arch_object_165X114px_Blue: 0},
+		{beach_object_165X114px_Blue: 0},
+		{branch_object_165X114px_Blue: 0},
+		{brush_object_165X114px_Blue: 0},
+		{cash_object_165X114px_Blue: 0},
+		{chisel_object_165X114px_Blue: 0},
+		{cloth_object_165X114px_Blue: 0},
+		{dish_object_165X114px_Blue: 0},
+		{lychee_object_165X114px_Blue: 0},
+		{peach_object_165X114px_Blue: 0},
+		{Ph_Bath_Image_Blue: 0},
+		{Ph_Bench_Image_Blue: 0},
+		{Ph_Bush_Image_Blue: 0},
+		{Ph_Chair_Image_Blue: 0},
+		{Ph_Chest_Image_Blue: 0},
+		{Ph_Chick_Image_Blue: 0},
+		{Ph_Chilli_Image_Blue: 0},
+		{Ph_Chin_Image_Blue: 0},
+		{Ph_Church_Image_Blue: 0},
+		{Ph_Conch_Image_Blue: 0},
+		{Ph_Dolphin_Image_Blue: 0},
+		{Ph_Elephant_Image_Blue: 0},
+		{Ph_Fish_Image_Blue: 0},
+		{Ph_Graph_Image_Blue: 0},
+		{Ph_Moth_Image_Blue: 0},
+		{Ph_Ostrich_Image_Blue: 0},
+		{Ph_Path_Image_Blue: 0},
+		{Ph_Pharoah_Image_Blue: 0},
+		{Ph_Phone_Image_Blue: 0},
+		{Ph_Photo_Image_Blue: 0},
+		{Ph_Queen_Image_Blue: 0},
+		{Ph_Quill_Image_Blue: 0},
+		{Ph_Quilt_Image_Blue: 0},
+		{Ph_Shark_Image_Blue: 0},
+		{Ph_Sheep_Image_Blue: 0},
+		{Ph_Shelf_Image_Blue: 0},
+		{Ph_Shell_Image_Blue: 0},
+		{Ph_Ship_Image_Blue: 0},
+		{Ph_Shirt_Image_Blue: 0},
+		{Ph_Shop_Image_Blue: 0},
+		{Ph_Sloth_Image_Blue: 0},
+		{Ph_Sphere_Image_Blue: 0},
+		{Ph_Square_Image_Blue: 0},
+		{Ph_Squid_Image_Blue: 0},
+		{Ph_Teeth_Image_Blue: 0},
+		{Ph_Thief_Image_Blue: 0},
+		{Ph_Thorn_Image_Blue: 0},
+		{Ph_Thumb_Image_Blue: 0},
+		{Ph_Torch_Image_Blue: 0},
+		{Ph_Trophy_Image_Blue: 0},
+		{Ph_Typhoon_Image_Blue: 0},
+		{Ph_Whale_Image_Blue: 0},
+		{Ph_Wharf_Image_Blue: 0},
+		{Ph_Wheel_Image_Blue: 0},
+		{Ph_Whip_Image_Blue: 0},
+		{Ph_Whisk_Image_Blue: 0},
+		{Ph_Whistle_Image_Blue: 0},
+		{Ph_White_Image_Blue: 0},
+		{quiver_object_165X114px_Blue: 0},
+		{squirrel_object_165X114px_Blue: 0},
+		{theatre_object_165X114px_Blue: 0},
+		{thermometer_object_165X114px_Blue: 0},
+		{thigh_object_165X114px_Blue: 0},
+		{throne_object_165X114px_Blue: 0},
+		{thrush_object_165X114px_Blue: 0},
+		{whisker_object_165X114px_Blue: 0},
+		{whisper_object_165X114px_Blue: 0},
+		{wrench_object_165X114px_Blue: 0},
 		{Back_Button: 0},
 		{Hint: 0},
 		{Home: 0},
 		{Music: 0},
 		{Skip: 0},
-		{Game1_Background_L0to: 0},
-		{Mascot: 0},
-		{Rewards_Type: 0},
-		{Progress_Bar_Type: 0},
-		{Touch: 0},
-		{Audio: 0},
-		{Play_Game: 0},
+		{Fade: 0},
 		{Play_Again: 0},
-		{TextInput: 0},
-		{TextData: 0},
+		{Play_Game: 0},
+		{arch_label_165X50px_Blue: 0},
+		{beach_label_165X50px_Blue: 0},
+		{branch_label_165X50px_Blue: 0},
+		{brush_label_165X50px_Blue: 0},
+		{cash_label_165X50px_Blue: 0},
+		{chisel_label_165X50px_Blue: 0},
+		{cloth_label_165X50px_Blue: 0},
+		{dish_label_165X50px_Blue: 0},
+		{lychee_label_165X50px_Blue: 0},
+		{peach_label_165X50px_Blue: 0},
+		{Ph_Bath_Label_Blue: 0},
+		{Ph_Bench_Label_Blue: 0},
+		{Ph_Bush_Label_Blue: 0},
+		{Ph_Chair_Label_Blue: 0},
+		{Ph_Chest_Label_Blue: 0},
+		{Ph_Chick_Label_Blue: 0},
+		{Ph_Chilli_Label_Blue: 0},
+		{Ph_Chin_Label_Blue: 0},
+		{Ph_Church_Label_Blue: 0},
+		{Ph_Conch_Label_Blue: 0},
+		{Ph_Dolphin_Label_Blue: 0},
+		{Ph_Elephant_Label_Blue: 0},
+		{Ph_Fish_Label_Blue: 0},
+		{Ph_Graph_Label_Blue: 0},
+		{Ph_Moth_Label_Blue: 0},
+		{Ph_Ostrich_Label_Blue: 0},
+		{Ph_Path_Label_Blue: 0},
+		{Ph_Pharoah_Label_Blue: 0},
+		{Ph_Phone_Label_Blue: 0},
+		{Ph_Photo_Label_Blue: 0},
+		{Ph_Queen_Label_Blue: 0},
+		{Ph_Quill_Label_Blue: 0},
+		{Ph_Quilt_Label_Blue: 0},
+		{Ph_Shark_Label_Blue: 0},
+		{Ph_Sheep_Label_Blue: 0},
+		{Ph_Shelf_Label_Blue: 0},
+		{Ph_Shell_Label_Blue: 0},
+		{Ph_Ship_Label_Blue: 0},
+		{Ph_Shirt_Label_Blue: 0},
+		{Ph_Shop_Label_Blue: 0},
+		{Ph_Sloth_Label_Blue: 0},
+		{Ph_Sphere_Label_Blue: 0},
+		{Ph_Square_Label_Blue: 0},
+		{Ph_Squid_Label_Blue: 0},
+		{Ph_Teeth_Label_Blue: 0},
+		{Ph_Thief_Label_Blue: 0},
+		{Ph_Thorn_Label_Blue: 0},
+		{Ph_Thumb_Label_Blue: 0},
+		{Ph_Torch_Label_Blue: 0},
+		{Ph_Trophy_Label_Blue: 0},
+		{Ph_Typhoon_Label_Blue: 0},
+		{Ph_Whale_Label_Blue: 0},
+		{Ph_Wharf_Label_Blue: 0},
+		{Ph_Wheel_Label_Blue: 0},
+		{Ph_Whip_Label_Blue: 0},
+		{Ph_Whisk_Label_Blue: 0},
+		{Ph_Whistle_Label_Blue: 0},
+		{Ph_White_Label_Blue: 0},
+		{quiver_label_165X50px_Blue: 0},
+		{squirrel_label_165X50px_Blue: 0},
+		{theater_label_165X50px_Blue: 0},
+		{thermometer_label_165X50px_Blue: 0},
+		{thigh_label_165X50px_Blue: 0},
+		{throne_label_165X50px_Blue: 0},
+		{thrush_label_165X50px_Blue: 0},
+		{whisker_label_165X50px_Blue: 0},
+		{whisper_label_165X50px_Blue: 0},
+		{wrench_label_165X50px_Blue: 0},
 		{AJAX: 0},
+		{Audio: 0},
+		{Touch: 0},
+		{Game1_Background_L0to: 0},
+		{MoveTo: 0},
+		{Mascot: 0},
+		{Progress_Bar_Type: 0},
+		{Rewards_Type: 0},
+		{TextData: 0},
+		{Speech_Bubble: 0},
+		{Labels: 0},
+		{Images: 0},
+		{P_BushTapped: 0},
 		{P_SheepTapped: 0},
 		{P_SharkTapped: 0},
 		{P_ShirtTapped: 0},
+		{P_BrushTapped: 0},
+		{P_DishTapped: 0},
+		{P_CashTapped: 0},
+		{P_ShopTapped: 0},
+		{P_FishTapped: 0},
+		{P_ShipTapped: 0},
+		{P_ShelfTapped: 0},
+		{P_ShellTapped: 0},
+		{P_ChurchTapped: 0},
+		{P_TorchTapped: 0},
+		{P_BranchTapped: 0},
+		{P_ChairTapped: 0},
+		{P_ChilliTapped: 0},
+		{P_BenchTapped: 0},
+		{P_ConchTapped: 0},
+		{P_ChestTapped: 0},
+		{P_OstrichTapped: 0},
+		{P_ChinTapped: 0},
+		{P_ChickTapped: 0},
+		{P_ThornTapped: 0},
+		{P_BathTapped: 0},
+		{P_ThiefTapped: 0},
+		{P_TeethTapped: 0},
+		{P_ThumbTapped: 0},
+		{P_MothTapped: 0},
+		{P_SlothTapped: 0},
+		{P_ClothTapped: 0},
+		{P_ThrushTapped: 0},
+		{P_PathTapped: 0},
+		{P_WhaleTapped: 0},
+		{P_WharfTapped: 0},
+		{P_WheelTapped: 0},
+		{P_WhistleTapped: 0},
+		{P_WhiteTapped: 0},
+		{P_WhiskTapped: 0},
+		{P_WhipTapped: 0},
+		{P_QueenTapped: 0},
+		{P_SquareTapped: 0},
+		{P_QuillTapped: 0},
+		{P_SquidTapped: 0},
+		{P_QuiltTapped: 0},
+		{P_PhotoTapped: 0},
+		{P_PharoahTapped: 0},
+		{P_PhoneTapped: 0},
+		{P_SphereTapped: 0},
+		{P_TrophyTapped: 0},
+		{P_TyphoonTapped: 0},
+		{P_DolphinTapped: 0},
+		{P_ElephantTapped: 0},
+		{P_GraphTapped: 0},
 		{P_Attempted: 0},
 		{P_Completed: 0},
-		{P_BushTapped: 0},
+		{PresentationTimeSpent: 0},
 		{TouchEnabled: 0},
-		{PresentationTimeSpent: 0}
+		{Ph_P_SetNumber: 0}
 	];
 }
 
@@ -3036,24 +3198,68 @@ value:this._waitTime,onedit:v=>this._waitTime=v},{name:prefix+".properties.fade-
 	}
 
 	self.C3_ExpressionFuncs = [
+		() => 1,
 		() => 0,
 		() => "LP_A1",
-		() => 1,
+		() => "Set 1",
 		() => "LP_A2",
-		() => 250,
+		() => 330,
 		() => 340,
-		() => 190,
-		() => 475,
+		() => 130,
+		() => 530,
 		() => "Explain",
 		() => 765,
 		() => 380,
+		() => 0.5,
 		() => "LP_A3",
 		() => "P_ImageSound",
+		p => {
+			const n0 = p._GetNode(0);
+			return () => n0.ExpObject();
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 80);
+		},
 		() => 3,
-		() => "LP_A4",
+		() => "Set 2",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => v0.GetValue();
+		},
+		() => 2,
+		() => "Set 3",
+		() => "Set 4",
+		() => 4,
+		() => "Set 5",
+		() => 5,
+		() => "Set 6",
+		() => 6,
+		() => "Set 7",
+		() => 7,
+		() => 230,
+		() => "Set 8",
+		() => 8,
+		() => "Set 9",
+		() => 9,
+		() => "Set 10",
+		() => 10,
+		() => "Set 11",
+		() => 11,
+		() => "Set 12",
+		() => 12,
+		() => "Set 13",
+		() => 13,
+		() => "LP_A4",
+		() => "Smile",
+		() => "",
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 20);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 140);
 		},
 		p => {
 			const v0 = p._GetNode(0).GetVar();
