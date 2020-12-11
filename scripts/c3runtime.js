@@ -3252,7 +3252,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => 13,
 		() => "LP_A4",
 		() => "Smile",
-		() => "",
+		() => "EndSound",
 		p => {
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 20);
