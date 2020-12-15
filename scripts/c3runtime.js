@@ -2870,6 +2870,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Touch.Cnds.OnTapGestureObject,
 		C3.Plugins.Sprite.Cnds.IsVisible,
 		C3.Plugins.System.Cnds.Compare,
+		C3.Plugins.Sprite.Acts.StartAnim,
+		C3.Plugins.System.Cnds.TriggerOnce,
 		C3.Plugins.System.Acts.SubVar,
 		C3.Plugins.System.Cnds.CompareBoolVar,
 		C3.Plugins.Audio.Acts.Play,
@@ -2880,6 +2882,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.System.Acts.GoToLayout,
 		C3.Plugins.System.Acts.SetTimescale,
 		C3.Plugins.Audio.Acts.SetPaused,
+		C3.Plugins.Touch.Cnds.OnTouchStart,
 		C3.Plugins.System.Cnds.OnLayoutEnd,
 		C3.Plugins.Text.Acts.SetText,
 		C3.Plugins.Touch.Cnds.OnTapGesture
@@ -2965,8 +2968,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{Play_Game: 0},
 		{Continue: 0},
 		{Continue_Game: 0},
+		{Pick_New_Game: 0},
 		{Exit: 0},
-		{ExitSkip: 0},
 		{arch_label_165X50px_Blue: 0},
 		{beach_label_165X50px_Blue: 0},
 		{branch_label_165X50px_Blue: 0},
@@ -3049,6 +3052,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{TextData: 0},
 		{Touch: 0},
 		{Audio: 0},
+		{debug: 0},
+		{Confetti: 0},
 		{Labels: 0},
 		{Images: 0},
 		{P_BushTapped: 0},
@@ -3275,14 +3280,17 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => -150,
 		() => 235,
 		() => "Smile",
+		() => 14,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L0_4" + v0.GetValue());
 		},
+		() => "VB_A_L04",
 		() => 2,
-		() => 14,
 		() => "Set Cycles",
 		() => "Set 1 - Sheep, Bush, Shark, Shirt",
+		() => 1200,
+		() => 385,
 		p => {
 			const n0 = p._GetNode(0);
 			return () => n0.ExpObject();
@@ -3300,9 +3308,11 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => 5,
 		() => "Set 6 - Bench, Branch, Chick",
 		() => 6,
+		() => 427,
 		() => "Set 7 - Thorn, Thief, Bath, Cloth, Teeth",
 		() => 7,
-		() => 230,
+		() => 627,
+		() => 227,
 		() => "Set 8 - Thrush, Path, Moth, Thumb, Sloth",
 		() => 8,
 		() => "Set 9 - Whistle, Wharf, Whale, Wheel",
@@ -3324,10 +3334,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("GL_A_1" + v0.GetValue());
 		},
 		() => "GL_A_1",
-		() => "VB_A_L01",
-		() => "VB_A_L02",
-		() => "VB_A_L03",
-		() => "VB_A_L04",
+		() => "Lock Screen",
+		() => 180,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			const v1 = p._GetNode(1).GetVar();
