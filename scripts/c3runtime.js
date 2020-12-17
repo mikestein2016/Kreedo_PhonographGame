@@ -3154,6 +3154,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{P_Attempted: 0},
 		{P_Completed: 0},
 		{ArrowTutorial: 0},
+		{ArrowTutorialWaitTime: 0},
 		{Ph_P_SetNumber: 0},
 		{L2_Attempted: 0},
 		{L3_Attempted: 0},
@@ -3404,6 +3405,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 80);
 		},
+		() => 10,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L0_5_1" + v0.GetValue());
@@ -3435,7 +3437,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "Set 9 - Whistle, Wharf, Whale, Wheel",
 		() => 9,
 		() => "Set 10 - Whisk, Whip, White",
-		() => 10,
 		() => "Set 11 - Quilt, Square, Queen, Squid, Quill",
 		() => 11,
 		() => "Set 12 - Phone, Pharaoh, Photo, Sphere",
