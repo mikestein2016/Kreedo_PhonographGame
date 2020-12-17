@@ -3007,7 +3007,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{Continue: 0},
 		{Continue_Game: 0},
 		{Pick_New_Game: 0},
-		{Exit: 0},
+		{Play_Next_Level: 0},
 		{arch_label_165X50px_Blue: 0},
 		{beach_label_165X50px_Blue: 0},
 		{branch_label_165X50px_Blue: 0},
@@ -3444,9 +3444,9 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "UI",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_7" + v0.GetValue());
+			return () => ("GL_A_17" + v0.GetValue());
 		},
-		() => "GL_A_7",
+		() => "GL_A_17",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("GL_A_1" + v0.GetValue());
