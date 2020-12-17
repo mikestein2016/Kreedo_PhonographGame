@@ -2899,14 +2899,17 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Touch.Cnds.OnTapGestureObject,
 		C3.Plugins.Sprite.Cnds.IsVisible,
 		C3.Plugins.System.Cnds.Compare,
+		C3.Plugins.System.Cnds.CompareBoolVar,
 		C3.Plugins.Sprite.Acts.StartAnim,
 		C3.Plugins.System.Cnds.TriggerOnce,
 		C3.Plugins.System.Acts.SubVar,
-		C3.Plugins.System.Cnds.CompareBoolVar,
 		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.Sprite.Acts.SetAnimFrame,
 		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
 		C3.Plugins.Sprite.Cnds.CompareFrame,
+		C3.Behaviors.Fade.Acts.StartFade,
+		C3.Behaviors.Fade.Acts.SetFadeInTime,
+		C3.Behaviors.Fade.Acts.SetFadeOutTime,
 		C3.Plugins.System.Acts.RestartLayout,
 		C3.Plugins.System.Acts.GoToLayout,
 		C3.Plugins.System.Acts.SetTimescale,
@@ -3078,17 +3081,18 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{Mascot: 0},
 		{Speech_Bubble: 0},
 		{Speech_Dots: 0},
+		{Confetti: 0},
 		{Progress_Bar_Type: 0},
 		{Rewards_Type: 0},
 		{ArrowLeft: 0},
 		{ArrowRight: 0},
 		{Game1_Background_L0to: 0},
 		{Game1_Background_L0to2: 0},
+		{Hand_Cursor: 0},
 		{TextData: 0},
 		{debug: 0},
 		{Touch: 0},
 		{Audio: 0},
-		{Confetti: 0},
 		{LocalStorage: 0},
 		{Labels: 0},
 		{Images: 0},
@@ -3149,6 +3153,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{PresentationTimeSpent: 0},
 		{P_Attempted: 0},
 		{P_Completed: 0},
+		{ArrowTutorial: 0},
 		{Ph_P_SetNumber: 0},
 		{L2_Attempted: 0},
 		{L3_Attempted: 0},
@@ -3372,6 +3377,10 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => v0.GetValue();
 		},
 		() => 12,
+		() => 427,
+		() => 550,
+		() => "VB_A_L0_5_1",
+		() => "VB_A_L0_5_2",
 		() => 13,
 		() => -150,
 		() => 235,
@@ -3395,6 +3404,19 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 80);
 		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_5_1" + v0.GetValue());
+		},
+		() => -10,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 50);
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_5_2" + v0.GetValue());
+		},
 		() => "Set 2 - Shop, Fish, Ship, Shelf",
 		() => "Set 3 - Cash, Shell, Brush, Dish",
 		() => 3,
@@ -3404,7 +3426,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => 5,
 		() => "Set 6 - Bench, Branch, Chick",
 		() => 6,
-		() => 427,
 		() => "Set 7 - Thorn, Thief, Bath, Cloth, Teeth",
 		() => 7,
 		() => 627,
