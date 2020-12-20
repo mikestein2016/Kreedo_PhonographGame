@@ -2592,6 +2592,30 @@ this._sdkType._UpdateAllCurrentTexture();if(!this.WasReleased()&&resize===0){wi.
 ImageWidth(){return this.GetCurrentImageInfo().GetWidth()},ImageHeight(){return this.GetCurrentImageInfo().GetHeight()},PolyPointXAt(i){return this.GetCollisionPolyPoint(i)[0]},PolyPointYAt(i){return this.GetCollisionPolyPoint(i)[1]},PolyPointCount(){return this.GetCollisionPolyPointCount()}}};
 
 
+'use strict';{const C3=self.C3;const DOM_COMPONENT_ID="button";C3.Plugins.Button=class ButtonPlugin extends C3.SDKDOMPluginBase{constructor(opts){super(opts,DOM_COMPONENT_ID);this.AddElementMessageHandler("click",(sdkInst,e)=>sdkInst._OnClick(e))}Release(){super.Release()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Button.Type=class ButtonType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}};
+
+
+'use strict';{const C3=self.C3;const TYPE=0;const TEXT=1;const TOOLTIP=2;const INITIALLY_VISIBLE=3;const ENABLE=4;const AUTO_FONT_SIZE=5;const CHECKED=6;const ID=7;const DOM_COMPONENT_ID="button";C3.Plugins.Button.Instance=class ButtonInstance extends C3.SDKDOMInstanceBase{constructor(inst,properties){super(inst,DOM_COMPONENT_ID);this._text="OK";this._isCheckbox=false;this._isChecked=false;this._title="";this._id="";this._isEnabled=true;this._autoFontSize=true;if(properties){this._isCheckbox=properties[TYPE]===
+1;this._text=properties[TEXT];this._title=properties[TOOLTIP];this.GetWorldInfo().SetVisible(properties[INITIALLY_VISIBLE]);this._isEnabled=properties[ENABLE];this._autoFontSize=properties[AUTO_FONT_SIZE];this._isChecked=properties[CHECKED];this._id=properties[ID]}this.CreateElement({"id":this._id})}Release(){super.Release()}GetElementState(){return{"text":this._text,"isCheckbox":this._isCheckbox,"isChecked":this._isChecked,"title":this._title,"isVisible":this.GetWorldInfo().IsVisible(),"isEnabled":this._isEnabled}}async _OnClick(e){this._isChecked=
+e["isChecked"];this.GetScriptInterface().dispatchEvent(C3.New(C3.Event,"click",true));await this.TriggerAsync(C3.Plugins.Button.Cnds.OnClicked)}_SetText(text){if(this._text===text)return;this._text=text;this.UpdateElementState()}_GetText(){return this._text}_SetTooltip(title){if(this._title===title)return;this._title=title;this.UpdateElementState()}_GetTooltip(){return this._title}_SetEnabled(e){e=!!e;if(this._isEnabled===e)return;this._isEnabled=e;this.UpdateElementState()}_IsEnabled(){return this._isEnabled}_SetChecked(c){if(!this._isCheckbox)return;
+c=!!c;if(this._isChecked===c)return;this._isChecked=c;this.UpdateElementState()}_IsChecked(){return this._isChecked}Draw(renderer){}SaveToJson(){return{"text":this._text,"checked":this._isChecked,"title":this._title,"enabled":this._isEnabled}}LoadFromJson(o){this._text=o["text"];this._isChecked=o["checked"];this._title=o["title"];this._isEnabled=o["enabled"];this.UpdateElementState()}GetPropertyValueByIndex(index){switch(index){case TEXT:return this._text;case TOOLTIP:return this._title;case ENABLE:return this._isEnabled;
+case AUTO_FONT_SIZE:return this._autoFontSize;case CHECKED:return this._isChecked;case ID:return this._id}}SetPropertyValueByIndex(index,value){switch(index){case TEXT:if(this._text===value)return;this._text=value;this.UpdateElementState();break;case TOOLTIP:if(this._title===value)return;this._title=value;this.UpdateElementState();break;case ENABLE:if(this._isEnabled===!!value)return;this._isEnabled=!!value;this.UpdateElementState();break;case AUTO_FONT_SIZE:this._autoFontSize=!!value;break;case CHECKED:if(this._isChecked===
+!!value)return;this._isChecked=!!value;this.UpdateElementState();break;case ID:if(this._id===!!value)return;this._id=value;this.UpdateElementState();break}}GetDebuggerProperties(){const Acts=C3.Plugins.Button.Acts;const prefix="plugins.button";return[{title:prefix+".name",properties:[{name:prefix+".properties.text.name",value:this._text,onedit:v=>this.CallAction(Acts.SetText,v)},{name:prefix+".properties.enabled.name",value:this._isEnabled,onedit:v=>this.CallAction(Acts.SetEnabled,v)},{name:prefix+
+".properties.checked.name",value:this._isChecked,onedit:v=>this.CallAction(Acts.SetChecked,v)}]}]}GetScriptInterfaceClass(){return self.IButtonInstance}};const map=new WeakMap;self.IButtonInstance=class IButtonInstance extends self.IDOMInstance{constructor(){super();map.set(this,self.IInstance._GetInitInst().GetSdkInstance())}set text(str){map.get(this)._SetText(str)}get text(){return map.get(this)._GetText()}set tooltip(str){map.get(this)._SetTooltip(str)}get tooltip(){return map.get(this)._GetTooltip()}set isEnabled(e){map.get(this)._SetEnabled(e)}get isEnabled(){return map.get(this)._IsEnabled()}set isChecked(c){map.get(this)._SetChecked(c)}get isChecked(){return map.get(this)._IsChecked()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Button.Cnds={OnClicked(){return true},IsChecked(){return this._isChecked},CompareText(str,caseSensitive){if(caseSensitive)return this._text===str;else return C3.equalsNoCase(this._text,str)}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Button.Acts={SetText(text){this._SetText(text)},SetTooltip(title){this._SetTooltip(title)},SetChecked(c){this._SetChecked(c!==0)},ToggleChecked(){if(!this._isCheckbox)return;this._isChecked=!this._isChecked;this.UpdateElementState()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Button.Exps={Text(){return this._text}}};
+
+
 'use strict';{const C3=self.C3;C3.Plugins.AJAX=class AJAXPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
 
 
@@ -2868,6 +2892,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		return [
 		C3.Plugins.Sprite,
 		C3.Behaviors.Fade,
+		C3.Plugins.Button,
 		C3.Plugins.AJAX,
 		C3.Behaviors.MoveTo,
 		C3.Plugins.Text,
@@ -2882,6 +2907,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.System.Acts.SetBoolVar,
 		C3.Plugins.Sprite.Acts.SetBoolInstanceVar,
 		C3.Plugins.Sprite.Acts.StopAnim,
+		C3.Plugins.System.Exps.layoutname,
 		C3.Plugins.System.Cnds.IsGroupActive,
 		C3.Plugins.System.Cnds.Every,
 		C3.Plugins.Audio.Cnds.OnEnded,
@@ -2903,13 +2929,16 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Sprite.Acts.StartAnim,
 		C3.Plugins.System.Cnds.TriggerOnce,
 		C3.Plugins.System.Acts.SubVar,
+		C3.Behaviors.MoveTo.Acts.Stop,
+		C3.Plugins.System.Cnds.CompareBetween,
+		C3.Behaviors.MoveTo.Cnds.OnArrived,
+		C3.Behaviors.Fade.Acts.SetFadeInTime,
+		C3.Behaviors.Fade.Acts.SetFadeOutTime,
+		C3.Behaviors.Fade.Cnds.OnFadeOutEnd,
 		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.Sprite.Acts.SetAnimFrame,
 		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
 		C3.Plugins.Sprite.Cnds.CompareFrame,
-		C3.Behaviors.Fade.Acts.StartFade,
-		C3.Behaviors.Fade.Acts.SetFadeInTime,
-		C3.Behaviors.Fade.Acts.SetFadeOutTime,
 		C3.Plugins.System.Acts.RestartLayout,
 		C3.Plugins.System.Acts.GoToLayout,
 		C3.Plugins.System.Acts.SetTimescale,
@@ -2923,11 +2952,22 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.System.Cnds.OnLayoutEnd,
 		C3.Plugins.LocalStorage.Acts.SetItem,
 		C3.Plugins.Text.Acts.SetText,
-		C3.Plugins.Touch.Cnds.OnTapGesture
+		C3.Plugins.Touch.Cnds.OnTapGesture,
+		C3.Behaviors.MoveTo.Acts.SetEnabled,
+		C3.Plugins.System.Acts.CreateObject,
+		C3.Behaviors.MoveTo.Acts.SetMaxSpeed,
+		C3.Plugins.Sprite.Cnds.CompareX,
+		C3.Plugins.Sprite.Acts.MoveToTop,
+		C3.Behaviors.Fade.Acts.StartFade,
+		C3.Plugins.Sprite.Acts.SetMirrored,
+		C3.Plugins.System.Acts.GoToLayoutByName
 		];
 	};
 	self.C3_JsPropNameTable = [
 		{Tapped: 0},
+		{Focus: 0},
+		{Correct: 0},
+		{Wrong: 0},
 		{arch_object_165X114px_Blue: 0},
 		{beach_object_165X114px_Blue: 0},
 		{branch_object_165X114px_Blue: 0},
@@ -3008,6 +3048,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{Continue_Game: 0},
 		{Pick_New_Game: 0},
 		{Play_Next_Level: 0},
+		{GameSelect: 0},
 		{arch_label_165X50px_Blue: 0},
 		{beach_label_165X50px_Blue: 0},
 		{branch_label_165X50px_Blue: 0},
@@ -3171,6 +3212,11 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{RewardPoints: 0},
 		{NewLevel: 0},
 		{Language: 0},
+		{L1_TimeSpent: 0},
+		{L1_TutorialCompleted: 0},
+		{TutorialStep: 0},
+		{CurrentGame: 0},
+		{CurrentLevel: 0},
 		{P_BushTapped1: 0},
 		{P_SheepTapped1: 0},
 		{P_SharkTapped1: 0},
@@ -3225,7 +3271,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{P_DolphinTapped1: 0},
 		{P_ElephantTapped1: 0},
 		{P_GraphTapped1: 0},
-		{L1_TimeSpent: 0},
 		{L1_Attempted: 0},
 		{L1_Completed: 0}
 	];
@@ -3337,6 +3382,10 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => 0,
 		() => "VB_A_L0_1",
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0();
+		},
 		() => "Phonograph Data L0",
 		() => "Phonograph Mascot L0",
 		p => {
@@ -3378,8 +3427,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => v0.GetValue();
 		},
 		() => 12,
-		() => 427,
-		() => 550,
 		() => "VB_A_L0_5_1",
 		() => "VB_A_L0_5_2",
 		() => 13,
@@ -3393,31 +3440,37 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => "VB_A_L04",
 		() => 2,
-		() => "Set Cycles",
-		() => "Set 1 - Sheep, Bush, Shark, Shirt",
-		() => 1200,
-		() => 385,
+		() => "Arrow Tutorial",
+		() => "VB_A_L0_5",
+		() => "VB_A_L0_5_3",
+		() => 10,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_5_3" + v0.GetValue());
+		},
+		() => -10,
 		p => {
 			const n0 = p._GetNode(0);
 			return () => n0.ExpObject();
 		},
 		p => {
 			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() + 80);
-		},
-		() => 10,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L0_5_1" + v0.GetValue());
-		},
-		() => -10,
-		p => {
-			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 50);
 		},
 		p => {
 			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L0_5_2" + v0.GetValue());
+			return () => ("VB_A_L0_5" + v0.GetValue());
+		},
+		() => 0.1,
+		() => 427,
+		() => 550,
+		() => "Set Cycles",
+		() => "Set 1 - Sheep, Bush, Shark, Shirt",
+		() => 1200,
+		() => 385,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 80);
 		},
 		() => "Set 2 - Shop, Fish, Ship, Shelf",
 		() => "Set 3 - Cash, Shell, Brush, Dish",
@@ -3514,10 +3567,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "P_ElephantTapped",
 		() => "P_GraphTapped",
 		() => "Get Image Taps L0",
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0();
-		},
 		() => "Set Image Taps End L0",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -3531,9 +3580,75 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => "Level1",
 		() => "Active",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_1" + v0.GetValue());
+		},
+		() => "VB_A_L1_1",
+		() => "CurrentLevel",
 		() => "Phonograph Data L1",
-		() => "Phonograph Mascot L1",
-		() => "Phonograph Tutorial L1"
+		() => "Phonograph Tutorial L1",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_2_2" + v0.GetValue());
+		},
+		() => "VB_A_L1_2_2",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_3" + v0.GetValue());
+		},
+		() => "VB_A_L1_3",
+		() => 835,
+		() => 237,
+		() => 270,
+		() => "Church",
+		() => "Ph_L1_Tutorial_Church",
+		() => "Ship",
+		() => "Ph_L1_Tutorial_Ship",
+		() => 617,
+		() => "Thumb",
+		() => "Ph_L1_Tutorial_Thumb",
+		() => 410,
+		() => "Bench",
+		() => "Ph_L1_Tutorial_Bench",
+		() => "Shark",
+		() => "Ph_L1_Tutorial_Shark",
+		() => "Chest",
+		() => "Ph_L1_Tutorial_Chest",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_4" + v0.GetValue());
+		},
+		() => "VB_A_L1_4",
+		() => 500,
+		() => 120,
+		() => "Ph_L1_Tutorial_Correct",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_5" + v0.GetValue());
+		},
+		() => "VB_A_L1_5",
+		() => 2.5,
+		() => 300,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_6" + v0.GetValue());
+		},
+		() => "VB_A_L1_6",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_7" + v0.GetValue());
+		},
+		() => "VB_A_L1_7",
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 125);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 130);
+		},
+		() => "Phonograph UI L1 Tutorial"
 	];
 }
 
