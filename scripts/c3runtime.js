@@ -2913,6 +2913,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Audio.Cnds.OnEnded,
 		C3.Behaviors.MoveTo.Acts.MoveToPosition,
 		C3.Plugins.System.Acts.Wait,
+		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.Sprite.Acts.SetVisible,
 		C3.Behaviors.Fade.Acts.RestartFade,
 		C3.Plugins.Audio.Cnds.IsTagPlaying,
@@ -2924,17 +2925,14 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Audio.Acts.Stop,
 		C3.Plugins.Touch.Cnds.OnTapGestureObject,
 		C3.Plugins.Sprite.Cnds.IsVisible,
-		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.System.Cnds.CompareBoolVar,
+		C3.Plugins.System.Acts.SubVar,
 		C3.Plugins.Sprite.Acts.StartAnim,
 		C3.Plugins.System.Cnds.TriggerOnce,
-		C3.Plugins.System.Acts.SubVar,
 		C3.Behaviors.MoveTo.Acts.Stop,
 		C3.Plugins.System.Cnds.CompareBetween,
 		C3.Behaviors.MoveTo.Cnds.OnArrived,
-		C3.Behaviors.Fade.Acts.SetFadeInTime,
-		C3.Behaviors.Fade.Acts.SetFadeOutTime,
-		C3.Behaviors.Fade.Cnds.OnFadeOutEnd,
+		C3.Plugins.Sprite.Cnds.CompareY,
 		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.Sprite.Acts.SetAnimFrame,
 		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
@@ -2958,8 +2956,11 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Behaviors.MoveTo.Acts.SetMaxSpeed,
 		C3.Plugins.Sprite.Cnds.CompareX,
 		C3.Plugins.Sprite.Acts.MoveToTop,
+		C3.Behaviors.Fade.Acts.SetFadeInTime,
+		C3.Behaviors.Fade.Acts.SetFadeOutTime,
 		C3.Behaviors.Fade.Acts.StartFade,
 		C3.Plugins.Sprite.Acts.SetMirrored,
+		C3.Plugins.Sprite.Cnds.IsAnimPlaying,
 		C3.Plugins.System.Acts.GoToLayoutByName
 		];
 	};
@@ -3135,6 +3136,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{Touch: 0},
 		{Audio: 0},
 		{LocalStorage: 0},
+		{Previous_Level: 0},
 		{Labels: 0},
 		{Images: 0},
 		{P_BushTapped: 0},
@@ -3409,6 +3411,11 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "VB_A_L0_4",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
+			return () => v0.GetValue();
+		},
+		() => 14,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
 			return () => ("GL_A_3" + v0.GetValue());
 		},
 		() => "GL_A_3",
@@ -3422,25 +3429,24 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => "P_ImageSound",
 		() => "Navigation Arrows",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => v0.GetValue();
-		},
 		() => 12,
 		() => "VB_A_L0_5_1",
 		() => "VB_A_L0_5_2",
-		() => 13,
+		() => 2,
 		() => -150,
 		() => 235,
+		() => 13,
 		() => "Smile",
-		() => 14,
+		() => 1200,
+		() => 385,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L0_4" + v0.GetValue());
 		},
 		() => "VB_A_L04",
-		() => 2,
 		() => "Arrow Tutorial",
+		() => 427,
+		() => 550,
 		() => "VB_A_L0_5",
 		() => "VB_A_L0_5_3",
 		() => 10,
@@ -3461,13 +3467,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L0_5" + v0.GetValue());
 		},
-		() => 0.1,
-		() => 427,
-		() => 550,
 		() => "Set Cycles",
 		() => "Set 1 - Sheep, Bush, Shark, Shirt",
-		() => 1200,
-		() => 385,
 		p => {
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 80);
@@ -3630,6 +3631,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "VB_A_L1_5",
 		() => 2.5,
 		() => 300,
+		() => 0.1,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L1_6" + v0.GetValue());
@@ -3648,7 +3650,13 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() - 130);
 		},
-		() => "Phonograph UI L1 Tutorial"
+		() => "Phonograph UI L1 Tutorial",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_2" + v0.GetValue());
+		},
+		() => "GL_A_2",
+		() => "Phonograph UI L1"
 	];
 }
 
