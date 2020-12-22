@@ -2957,7 +2957,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Behaviors.Fade.Acts.SetFadeInTime,
 		C3.Behaviors.Fade.Acts.SetFadeOutTime,
 		C3.Behaviors.Fade.Acts.StartFade,
-		C3.Plugins.Sprite.Acts.SetMirrored,
+		C3.Plugins.Sprite.Acts.SetAngle,
 		C3.Plugins.Sprite.Cnds.IsAnimPlaying,
 		C3.Plugins.System.Acts.GoToLayoutByName
 		];
@@ -3199,6 +3199,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{P_Completed: 0},
 		{ArrowTutorial: 0},
 		{ArrowTutorialWaitTime: 0},
+		{TapImageTutorial: 0},
+		{TapImageTutorialWaitTime: 0},
 		{Ph_P_SetNumber: 0},
 		{L2_Attempted: 0},
 		{L3_Attempted: 0},
@@ -3470,6 +3472,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("VB_A_L0_5" + v0.GetValue());
 		},
 		() => 4,
+		() => "Tap Image Tutorial",
 		() => "Set Cycles",
 		() => "Set 1 - Sheep, Bush, Shark, Shirt",
 		p => {
@@ -3643,13 +3646,14 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("VB_A_L1_7" + v0.GetValue());
 		},
 		() => "VB_A_L1_7",
+		() => 325,
 		p => {
 			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 125);
+			return () => (n0.ExpObject() - 50);
 		},
 		p => {
 			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 130);
+			return () => (n0.ExpObject() - 165);
 		},
 		() => "Phonograph UI L1 Tutorial",
 		p => {
