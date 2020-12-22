@@ -2929,10 +2929,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.System.Acts.SubVar,
 		C3.Plugins.Sprite.Acts.StartAnim,
 		C3.Plugins.System.Cnds.TriggerOnce,
-		C3.Behaviors.MoveTo.Acts.Stop,
 		C3.Plugins.System.Cnds.CompareBetween,
-		C3.Behaviors.MoveTo.Cnds.OnArrived,
-		C3.Plugins.Sprite.Cnds.CompareY,
 		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.Sprite.Acts.SetAnimFrame,
 		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
@@ -2951,6 +2948,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.LocalStorage.Acts.SetItem,
 		C3.Plugins.Text.Acts.SetText,
 		C3.Plugins.Touch.Cnds.OnTapGesture,
+		C3.Behaviors.MoveTo.Cnds.OnArrived,
 		C3.Behaviors.MoveTo.Acts.SetEnabled,
 		C3.Plugins.System.Acts.CreateObject,
 		C3.Behaviors.MoveTo.Acts.SetMaxSpeed,
@@ -3130,6 +3128,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{ArrowRight: 0},
 		{Game1_Background_L0to: 0},
 		{Game1_Background_L0to2: 0},
+		{Fade_In: 0},
+		{Fade_Out: 0},
 		{Hand_Cursor: 0},
 		{TextData: 0},
 		{debug: 0},
@@ -3137,6 +3137,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{Audio: 0},
 		{LocalStorage: 0},
 		{Previous_Level: 0},
+		{Exit: 0},
 		{Labels: 0},
 		{Images: 0},
 		{P_BushTapped: 0},
@@ -3463,10 +3464,12 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 50);
 		},
+		() => 5,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L0_5" + v0.GetValue());
 		},
+		() => 4,
 		() => "Set Cycles",
 		() => "Set 1 - Sheep, Bush, Shark, Shirt",
 		p => {
@@ -3477,9 +3480,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "Set 3 - Cash, Shell, Brush, Dish",
 		() => 3,
 		() => "Set 4 - Chair, Chilli, Torch, Church",
-		() => 4,
 		() => "Set 5 - Chest, Chin, Conch, Ostrich ",
-		() => 5,
 		() => "Set 6 - Bench, Branch, Chick",
 		() => 6,
 		() => "Set 7 - Thorn, Thief, Bath, Cloth, Teeth",
@@ -3498,9 +3499,9 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "UI",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_17" + v0.GetValue());
+			return () => ("GL_A_7" + v0.GetValue());
 		},
-		() => "GL_A_17",
+		() => "GL_A_7",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("GL_A_1" + v0.GetValue());
@@ -3651,6 +3652,11 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => (n0.ExpObject() - 130);
 		},
 		() => "Phonograph UI L1 Tutorial",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_17" + v0.GetValue());
+		},
+		() => "GL_A_17",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("GL_A_2" + v0.GetValue());
