@@ -3860,6 +3860,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "P_L1_ImageSound",
 		() => "IncorrectSound",
 		() => "Music L1",
+		() => "GL_A_5",
 		() => "None",
 		() => "Set Board L1",
 		() => "Bush",
@@ -3998,6 +3999,10 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "Progress Bar L1",
 		() => "LevelCompletionSound",
 		() => 790,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_5" + v0.GetValue());
+		},
 		p => {
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 15);
