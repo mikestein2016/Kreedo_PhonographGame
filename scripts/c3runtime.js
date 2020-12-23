@@ -2944,6 +2944,9 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Sprite.Acts.SetBoolInstanceVar,
 		C3.Plugins.Sprite.Acts.StopAnim,
 		C3.Plugins.System.Exps.layoutname,
+		C3.Plugins.Audio.Cnds.IsTagPlaying,
+		C3.Plugins.System.Cnds.CompareBoolVar,
+		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.System.Cnds.IsGroupActive,
 		C3.Plugins.System.Cnds.Every,
 		C3.Plugins.Audio.Cnds.OnEnded,
@@ -2952,7 +2955,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.Sprite.Acts.SetVisible,
 		C3.Behaviors.Fade.Acts.RestartFade,
-		C3.Plugins.Audio.Cnds.IsTagPlaying,
 		C3.Plugins.Sprite.Acts.SetPos,
 		C3.Plugins.Sprite.Exps.X,
 		C3.Plugins.Sprite.Exps.Y,
@@ -2961,12 +2963,10 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Audio.Acts.Stop,
 		C3.Plugins.Touch.Cnds.OnTapGestureObject,
 		C3.Plugins.Sprite.Cnds.IsVisible,
-		C3.Plugins.System.Cnds.CompareBoolVar,
 		C3.Plugins.System.Acts.SubVar,
 		C3.Plugins.Sprite.Acts.StartAnim,
 		C3.Plugins.System.Cnds.TriggerOnce,
 		C3.Plugins.System.Cnds.CompareBetween,
-		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.Sprite.Acts.SetAnimFrame,
 		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
 		C3.Plugins.Sprite.Cnds.CompareFrame,
@@ -2974,6 +2974,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.System.Acts.GoToLayout,
 		C3.Plugins.System.Acts.SetTimescale,
 		C3.Plugins.Audio.Acts.SetPaused,
+		C3.Plugins.System.Acts.ToggleBoolVar,
+		C3.Plugins.Audio.Acts.SetMuted,
 		C3.Plugins.Touch.Cnds.OnTouchStart,
 		C3.Plugins.LocalStorage.Acts.CheckItemExists,
 		C3.Plugins.LocalStorage.Cnds.OnItemExists,
@@ -2984,6 +2986,12 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.LocalStorage.Acts.SetItem,
 		C3.Plugins.Text.Acts.SetText,
 		C3.Plugins.Touch.Cnds.OnTapGesture,
+		C3.Plugins.Arr.Acts.SetSize,
+		C3.Plugins.System.Cnds.For,
+		C3.Plugins.Arr.Acts.Insert,
+		C3.Plugins.System.Exps.loopindex,
+		C3.Plugins.System.Exps.int,
+		C3.Plugins.System.Exps.random,
 		C3.Behaviors.MoveTo.Cnds.OnArrived,
 		C3.Behaviors.MoveTo.Acts.SetEnabled,
 		C3.Plugins.System.Acts.CreateObject,
@@ -2996,12 +3004,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Sprite.Acts.SetAngle,
 		C3.Plugins.Sprite.Cnds.IsAnimPlaying,
 		C3.Plugins.System.Acts.GoToLayoutByName,
-		C3.Plugins.Arr.Acts.SetSize,
-		C3.Plugins.System.Cnds.For,
-		C3.Plugins.Arr.Acts.Insert,
-		C3.Plugins.System.Exps.loopindex,
-		C3.Plugins.System.Exps.int,
-		C3.Plugins.System.Exps.random,
 		C3.Plugins.Arr.Cnds.CompareX,
 		C3.Plugins.System.Exps.choose,
 		C3.Plugins.System.Acts.CreateObjectByName,
@@ -3009,7 +3011,11 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Sprite.Cnds.OnCreated,
 		C3.Plugins.Arr.Exps.Width,
 		C3.Plugins.Sprite.Acts.Destroy,
-		C3.Plugins.Arr.Acts.Pop
+		C3.Plugins.Arr.Acts.Pop,
+		C3.Plugins.Arr.Acts.Push,
+		C3.Plugins.Arr.Exps.At,
+		C3.Plugins.System.Cnds.EveryTick,
+		C3.Behaviors.Fade.Cnds.OnFadeOutEnd
 		];
 	};
 	self.C3_JsPropNameTable = [
@@ -3100,6 +3106,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{GameSelect: 0},
 		{Exit: 0},
 		{Previous_Level: 0},
+		{Play_Next_Level_Blue: 0},
 		{Arch_l: 0},
 		{Beach_l: 0},
 		{Branch_l: 0},
@@ -3269,6 +3276,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{RewardPoints: 0},
 		{NewLevel: 0},
 		{Language: 0},
+		{MusicMute: 0},
+		{ArraySet: 0},
 		{L1_TimeSpent: 0},
 		{L1_TutorialCompleted: 0},
 		{TutorialStep: 0},
@@ -3443,8 +3452,10 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{L1_Option3: 0},
 		{L1_Option4: 0},
 		{L1_Option5: 0},
-		{WordSet: 0},
-		{L1_Destroy: 0}
+		{L1_WordSet: 0},
+		{L1_WrongChoice: 0},
+		{L1_Destroy: 0},
+		{L1_End: 0}
 	];
 }
 
@@ -3558,6 +3569,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0();
 		},
+		() => "BGMusic",
+		() => -25,
 		() => "Phonograph Data L0",
 		() => "Phonograph Mascot L0",
 		p => {
@@ -3677,6 +3690,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("GL_A_1" + v0.GetValue());
 		},
 		() => "GL_A_1",
+		() => "Active",
 		() => "Lock Screen",
 		() => 180,
 		() => "Get Variables from Storage L0",
@@ -3750,8 +3764,16 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const v6 = p._GetNode(6).GetVar();
 			return () => (and((((and((((and((((and(((and(((and(((and(((("Number of taps:" + "\n") + "\n") + "Sheep: "), v0.GetValue()) + "\n") + "Shark: "), v1.GetValue()) + "\n") + "Bush: "), v2.GetValue()) + "\n") + "Shirt: "), v3.GetValue()) + "\n") + "\n") + "Total time: "), v4.GetValue()) + " seconds") + "\n") + "Level Attempted: "), v5.GetValue()) + " times") + "\n") + "Level Completed: "), v6.GetValue()) + " times");
 		},
+		() => "Set Array Words",
+		() => "",
+		() => 54,
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			const f1 = p._GetNode(1).GetBoundMethod();
+			const f2 = p._GetNode(2).GetBoundMethod();
+			return () => f0(f1(f2()));
+		},
 		() => "Level1",
-		() => "Active",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L1_1" + v0.GetValue());
@@ -3792,7 +3814,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("VB_A_L1_4" + v0.GetValue());
 		},
 		() => "VB_A_L1_4",
-		() => 500,
+		() => 900,
 		() => 120,
 		() => "Ph_L1_Tutorial_Correct",
 		p => {
@@ -3801,7 +3823,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => "VB_A_L1_5",
 		() => 2.5,
-		() => 300,
+		() => "CorrectSound",
+		() => 500,
 		() => 0.1,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -3833,15 +3856,11 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("GL_A_2" + v0.GetValue());
 		},
 		() => "GL_A_2",
-		() => "",
-		() => 54,
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			const f1 = p._GetNode(1).GetBoundMethod();
-			const f2 = p._GetNode(2).GetBoundMethod();
-			return () => f0(f1(f2()));
-		},
 		() => "Phonograph UI L1",
+		() => "P_L1_ImageSound",
+		() => "IncorrectSound",
+		() => "Music L1",
+		() => "None",
 		() => "Set Board L1",
 		() => "Bush",
 		p => {
@@ -3964,8 +3983,24 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => (v0.GetValue() + "_i");
 		},
 		() => "Word Checker L1",
-		() => "P_L1_ImageSound",
-		() => "Destroyer L1"
+		() => "Destroyer L1",
+		() => 1000,
+		() => 55,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => n0.ExpObject(0);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			const n1 = p._GetNode(1);
+			return () => and(and(n0.ExpObject(), " "), n1.ExpObject(0));
+		},
+		() => "LevelCompletionSound",
+		() => 790,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 15);
+		}
 	];
 }
 
