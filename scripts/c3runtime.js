@@ -3856,7 +3856,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("GL_A_2" + v0.GetValue());
 		},
 		() => "GL_A_2",
-		() => "Phonograph UI L1",
+		() => "UI L1",
 		() => "P_L1_ImageSound",
 		() => "IncorrectSound",
 		() => "Music L1",
@@ -3995,6 +3995,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const n1 = p._GetNode(1);
 			return () => and(and(n0.ExpObject(), " "), n1.ExpObject(0));
 		},
+		() => "Progress Bar L1",
 		() => "LevelCompletionSound",
 		() => 790,
 		p => {
