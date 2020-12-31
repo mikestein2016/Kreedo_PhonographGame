@@ -4727,6 +4727,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => -240,
 		() => 240,
+		() => "Correct",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L3_6" + v0.GetValue());
