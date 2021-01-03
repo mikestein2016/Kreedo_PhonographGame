@@ -3020,6 +3020,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Behaviors.Fade.Cnds.OnFadeOutEnd,
 		C3.Plugins.System.Acts.GoToLayoutByName,
 		C3.Plugins.Sprite.Cnds.CompareY,
+		C3.Plugins.Sprite.Acts.SetMirrored,
 		C3.Plugins.Sprite.Acts.ZMoveToObject
 		];
 	};
@@ -4866,6 +4867,14 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("VB_A_L2_7" + v0.GetValue());
 		},
 		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 135);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 80);
+		},
+		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L3_1" + v0.GetValue());
 		},
@@ -4905,6 +4914,10 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L3_7" + v0.GetValue());
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 45);
 		},
 		() => 854,
 		() => 73,
