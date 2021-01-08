@@ -2920,6 +2920,31 @@ if(!timeline)return;C3.Behaviors.MoveTo.Acts.MoveAlongTimeline.call(this,timelin
 WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 
 
+'use strict';{const C3=self.C3;C3.Behaviors.DragnDrop=class DragnDropBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts);const rt=this._runtime.Dispatcher();this._disposables=new C3.CompositeDisposable(C3.Disposable.From(rt,"pointerdown",e=>this._OnPointerDown(e.data)),C3.Disposable.From(rt,"pointermove",e=>this._OnPointerMove(e.data)),C3.Disposable.From(rt,"pointerup",e=>this._OnPointerUp(e.data,false)),C3.Disposable.From(rt,"pointercancel",e=>this._OnPointerUp(e.data,true)))}Release(){this._disposables.Release();
+this._disposables=null;super.Release()}_OnPointerDown(e){this._OnInputDown(e["pointerId"].toString(),e["pageX"]-this._runtime.GetCanvasClientX(),e["pageY"]-this._runtime.GetCanvasClientY())}_OnPointerMove(e){this._OnInputMove(e["pointerId"].toString(),e["pageX"]-this._runtime.GetCanvasClientX(),e["pageY"]-this._runtime.GetCanvasClientY())}_OnPointerUp(e,isCancel){this._OnInputUp(e["pointerId"].toString())}async _OnInputDown(src,clientX,clientY){const myInstances=this.GetInstances();let topMost=null;
+let topBehInst=null;let topX=0;let topY=0;for(const inst of myInstances){const behInst=inst.GetBehaviorSdkInstanceFromCtor(C3.Behaviors.DragnDrop);if(!behInst.IsEnabled()||behInst.IsDragging())continue;const wi=inst.GetWorldInfo();const layer=wi.GetLayer();const [lx,ly]=layer.CanvasCssToLayer(clientX,clientY,wi.GetTotalZElevation());if(!wi.ContainsPoint(lx,ly))continue;if(!topMost){topMost=inst;topBehInst=behInst;topX=lx;topY=ly;continue}const topWi=topMost.GetWorldInfo();if(layer.GetIndex()>topWi.GetLayer().GetIndex()||
+layer.GetIndex()===topWi.GetLayer().GetIndex()&&wi.GetZIndex()>topWi.GetZIndex()){topMost=inst;topBehInst=behInst;topX=lx;topY=ly}}if(topMost)await topBehInst._OnDown(src,topX,topY)}_OnInputMove(src,clientX,clientY){const myInstances=this.GetInstances();for(const inst of myInstances){const behInst=inst.GetBehaviorSdkInstanceFromCtor(C3.Behaviors.DragnDrop);if(!behInst.IsEnabled()||!behInst.IsDragging()||behInst.IsDragging()&&behInst.GetDragSource()!==src)continue;const wi=inst.GetWorldInfo();const layer=
+wi.GetLayer();const [lx,ly]=layer.CanvasCssToLayer(clientX,clientY,wi.GetTotalZElevation());behInst._OnMove(lx,ly)}}async _OnInputUp(src){const myInstances=this.GetInstances();for(const inst of myInstances){const behInst=inst.GetBehaviorSdkInstanceFromCtor(C3.Behaviors.DragnDrop);if(behInst.IsDragging()&&behInst.GetDragSource()===src)await behInst._OnUp()}}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.DragnDrop.Type=class DragnDropType extends C3.SDKBehaviorTypeBase{constructor(behaviorType){super(behaviorType)}Release(){super.Release()}OnCreate(){}}};
+
+
+'use strict';{const C3=self.C3;const AXES=0;const ENABLE=1;C3.Behaviors.DragnDrop.Instance=class DragnDropInstance extends C3.SDKBehaviorInstanceBase{constructor(behInst,properties){super(behInst);this._isDragging=false;this._dx=0;this._dy=0;this._dragSource="<none>";this._axes=0;this._isEnabled=true;if(properties){this._axes=properties[AXES];this._isEnabled=properties[ENABLE]}}Release(){super.Release()}SaveToJson(){return{"a":this._axes,"e":this._isEnabled}}LoadFromJson(o){this._axes=o["a"];this._isEnabled=
+o["e"];this._isDragging=false}IsEnabled(){return this._isEnabled}IsDragging(){return this._isDragging}GetDragSource(){return this._dragSource}async _OnDown(src,x,y){const wi=this.GetWorldInfo();this._dx=x-wi.GetX();this._dy=y-wi.GetY();this._isDragging=true;this._dragSource=src;await this.TriggerAsync(C3.Behaviors.DragnDrop.Cnds.OnDragStart)}_OnMove(x,y){const wi=this.GetWorldInfo();const newX=x-this._dx;const newY=y-this._dy;if(this._axes===0){if(wi.GetX()!==newX||wi.GetY()!==newY){wi.SetXY(newX,
+newY);wi.SetBboxChanged()}}else if(this._axes===1){if(wi.GetX()!==newX){wi.SetX(newX);wi.SetBboxChanged()}}else if(this._axes===2)if(wi.GetY()!==newY){wi.SetY(newY);wi.SetBboxChanged()}}async _OnUp(){this._isDragging=false;await this.TriggerAsync(C3.Behaviors.DragnDrop.Cnds.OnDrop)}GetPropertyValueByIndex(index){switch(index){case AXES:return this._axes;case ENABLE:return this._isEnabled}}SetPropertyValueByIndex(index,value){switch(index){case AXES:this._axes=value;break;case ENABLE:this._isEnabled=
+!!value;break}}GetDebuggerProperties(){const prefix="behaviors.dragndrop";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".debugger.is-dragging",value:this._isDragging},{name:prefix+".properties.enabled.name",value:this._isEnabled,onedit:v=>this._isEnabled=v}]}]}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.DragnDrop.Cnds={IsDragging(){return this._isDragging},OnDragStart(){return true},OnDrop(){return true},IsEnabled(){return this._isEnabled}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.DragnDrop.Acts={SetEnabled(e){this._isEnabled=!!e;if(!this._isEnabled)this._isDragging=false},SetAxes(a){this._axes=a},Drop(){if(this._isDragging)this._OnUp()}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.DragnDrop.Exps={}};
+
+
 "use strict"
 {
 	const C3 = self.C3;
@@ -2935,6 +2960,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Touch,
 		C3.Plugins.Audio,
 		C3.Plugins.LocalStorage,
+		C3.Behaviors.DragnDrop,
 		C3.Plugins.System.Cnds.OnLayoutStart,
 		C3.Plugins.Sprite.Acts.SetAnim,
 		C3.Plugins.Sprite.Acts.StopAnim,
@@ -2962,34 +2988,14 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.System.Acts.Wait,
 		C3.Plugins.System.Acts.GoToLayout,
-		C3.Plugins.Sprite.Acts.SetBoolInstanceVar,
-		C3.Behaviors.MoveTo.Acts.MoveToPosition,
-		C3.Plugins.Sprite.Acts.SetVisible,
-		C3.Behaviors.Fade.Acts.RestartFade,
-		C3.Plugins.Audio.Cnds.IsTagPlaying,
-		C3.Plugins.Sprite.Acts.SetPos,
-		C3.Plugins.Sprite.Exps.X,
-		C3.Plugins.Sprite.Exps.Y,
-		C3.Plugins.Sprite.Acts.SetPosToObject,
-		C3.Plugins.System.Cnds.Else,
-		C3.Plugins.Sprite.Cnds.IsVisible,
-		C3.Plugins.System.Acts.SubVar,
-		C3.Plugins.Sprite.Acts.StartAnim,
-		C3.Plugins.System.Cnds.CompareBetween,
-		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
-		C3.Plugins.Sprite.Cnds.CompareFrame,
-		C3.Plugins.System.Acts.RestartLayout,
-		C3.Plugins.System.Acts.SetTimescale,
-		C3.Plugins.Audio.Acts.SetPaused,
-		C3.Plugins.System.Acts.ToggleBoolVar,
-		C3.Plugins.Audio.Acts.SetMuted,
+		C3.Plugins.Text.Acts.SetText,
+		C3.Plugins.Touch.Cnds.OnTapGesture,
 		C3.Plugins.LocalStorage.Acts.CheckItemExists,
 		C3.Plugins.LocalStorage.Cnds.OnItemExists,
 		C3.Plugins.LocalStorage.Acts.GetItem,
 		C3.Plugins.LocalStorage.Cnds.OnItemGet,
 		C3.Plugins.LocalStorage.Exps.ItemValue,
-		C3.Plugins.Text.Acts.SetText,
-		C3.Plugins.Touch.Cnds.OnTapGesture,
+		C3.Plugins.System.Acts.GoToLayoutByName,
 		C3.Plugins.Arr.Acts.SetSize,
 		C3.Plugins.System.Cnds.For,
 		C3.Plugins.Arr.Acts.Insert,
@@ -3002,26 +3008,55 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		C3.Plugins.Arr.Acts.Pop,
 		C3.Plugins.Sprite.Acts.Destroy,
 		C3.Plugins.System.Exps.choose,
+		C3.Plugins.Sprite.Cnds.IsVisible,
+		C3.Plugins.System.Acts.RestartLayout,
+		C3.Plugins.System.Acts.SetTimescale,
+		C3.Plugins.Sprite.Acts.SetVisible,
+		C3.Plugins.Audio.Acts.SetPaused,
+		C3.Plugins.Sprite.Cnds.IsAnimPlaying,
+		C3.Plugins.Audio.Cnds.IsTagPlaying,
+		C3.Plugins.System.Acts.ToggleBoolVar,
+		C3.Plugins.Audio.Acts.SetMuted,
+		C3.Plugins.Arr.Cnds.CompareX,
+		C3.Plugins.Sprite.Cnds.CompareY,
+		C3.Plugins.Sprite.Cnds.OnCreated,
+		C3.Behaviors.Fade.Acts.SetFadeOutTime,
+		C3.Plugins.Sprite.Cnds.CompareFrame,
+		C3.Plugins.Arr.Exps.Width,
+		C3.Behaviors.MoveTo.Acts.SetMaxSpeed,
+		C3.Plugins.Sprite.Acts.MoveToTop,
+		C3.Behaviors.MoveTo.Acts.MoveToPosition,
+		C3.Behaviors.Fade.Acts.RestartFade,
+		C3.Plugins.System.Cnds.EveryTick,
+		C3.Plugins.System.Cnds.CompareBetween,
+		C3.Plugins.Sprite.Acts.StartAnim,
+		C3.Behaviors.Fade.Cnds.OnFadeOutEnd,
+		C3.Plugins.Sprite.Acts.SetPos,
+		C3.Plugins.Sprite.Exps.X,
+		C3.Plugins.Sprite.Exps.Y,
+		C3.Plugins.Sprite.Acts.SetPosToObject,
+		C3.Plugins.System.Cnds.Else,
+		C3.Plugins.Sprite.Acts.SetBoolInstanceVar,
 		C3.Behaviors.MoveTo.Cnds.OnArrived,
 		C3.Behaviors.MoveTo.Acts.SetEnabled,
-		C3.Behaviors.Fade.Acts.SetFadeOutTime,
 		C3.Behaviors.Fade.Acts.SetFadeInTime,
-		C3.Behaviors.MoveTo.Acts.SetMaxSpeed,
 		C3.Plugins.Sprite.Cnds.CompareX,
-		C3.Plugins.Sprite.Acts.MoveToTop,
 		C3.Behaviors.Fade.Acts.StartFade,
 		C3.Plugins.Sprite.Acts.SetAngle,
-		C3.Plugins.Sprite.Cnds.IsAnimPlaying,
-		C3.Plugins.Arr.Cnds.CompareX,
-		C3.Plugins.Sprite.Cnds.OnCreated,
-		C3.Plugins.Arr.Exps.Width,
 		C3.Behaviors.MoveTo.Acts.SetAcceleration,
-		C3.Plugins.System.Cnds.EveryTick,
-		C3.Behaviors.Fade.Cnds.OnFadeOutEnd,
-		C3.Plugins.System.Acts.GoToLayoutByName,
-		C3.Plugins.Sprite.Cnds.CompareY,
 		C3.Plugins.Sprite.Acts.SetMirrored,
-		C3.Plugins.Sprite.Acts.ZMoveToObject
+		C3.Plugins.Sprite.Acts.ZMoveToObject,
+		C3.Plugins.System.Acts.SubVar,
+		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
+		C3.Behaviors.DragnDrop.Cnds.OnDrop,
+		C3.Plugins.Sprite.Cnds.IsOverlapping,
+		C3.Behaviors.DragnDrop.Acts.SetEnabled,
+		C3.Behaviors.DragnDrop.Cnds.IsEnabled,
+		C3.Plugins.Sprite.Acts.SetWidth,
+		C3.Plugins.Sprite.Exps.Width,
+		C3.Plugins.Sprite.Acts.SetHeight,
+		C3.Plugins.Sprite.Exps.Height,
+		C3.Behaviors.Fade.Acts.SetWaitTime
 		];
 	};
 	self.C3_JsPropNameTable = [
@@ -3361,74 +3396,34 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{Thumb_L4_S2_L4_T2: 0},
 		{L4_S_Blue_Rectangle: 0},
 		{L4_S_White_Box: 0},
+		{h_filled: 0},
+		{h_outline: 0},
+		{s_filled: 0},
+		{s_outline: 0},
+		{c_filled: 0},
+		{c_outline: 0},
+		{p_filled: 0},
+		{p_outline: 0},
+		{q_filled: 0},
+		{q_outline: 0},
+		{t_filled: 0},
+		{t_outline: 0},
+		{u_filled: 0},
+		{u_outline: 0},
+		{w_filled: 0},
+		{w_outline: 0},
 		{Touch: 0},
 		{Audio: 0},
 		{LocalStorage: 0},
+		{Motoboy: 0},
 		{Labels: 0},
 		{Images: 0},
 		{Cards: 0},
-		{P_BushTapped: 0},
-		{P_SheepTapped: 0},
-		{P_SharkTapped: 0},
-		{P_ShirtTapped: 0},
-		{P_BrushTapped: 0},
-		{P_DishTapped: 0},
-		{P_CashTapped: 0},
-		{P_ShopTapped: 0},
-		{P_FishTapped: 0},
-		{P_ShipTapped: 0},
-		{P_ShelfTapped: 0},
-		{P_ShellTapped: 0},
-		{P_ChurchTapped: 0},
-		{P_TorchTapped: 0},
-		{P_BranchTapped: 0},
-		{P_ChairTapped: 0},
-		{P_ChilliTapped: 0},
-		{P_BenchTapped: 0},
-		{P_ConchTapped: 0},
-		{P_ChestTapped: 0},
-		{P_OstrichTapped: 0},
-		{P_ChinTapped: 0},
-		{P_ChickTapped: 0},
-		{P_ThornTapped: 0},
-		{P_BathTapped: 0},
-		{P_ThiefTapped: 0},
-		{P_TeethTapped: 0},
-		{P_ThumbTapped: 0},
-		{P_MothTapped: 0},
-		{P_SlothTapped: 0},
-		{P_ClothTapped: 0},
-		{P_ThrushTapped: 0},
-		{P_PathTapped: 0},
-		{P_WhaleTapped: 0},
-		{P_WharfTapped: 0},
-		{P_WheelTapped: 0},
-		{P_WhistleTapped: 0},
-		{P_WhiteTapped: 0},
-		{P_WhiskTapped: 0},
-		{P_WhipTapped: 0},
-		{P_QueenTapped: 0},
-		{P_SquareTapped: 0},
-		{P_QuillTapped: 0},
-		{P_SquidTapped: 0},
-		{P_QuiltTapped: 0},
-		{P_PhotoTapped: 0},
-		{P_PharoahTapped: 0},
-		{P_PhoneTapped: 0},
-		{P_SphereTapped: 0},
-		{P_TrophyTapped: 0},
-		{P_TyphoonTapped: 0},
-		{P_DolphinTapped: 0},
-		{P_ElephantTapped: 0},
-		{P_GraphTapped: 0},
-		{PresentationTimeSpent: 0},
-		{P_Attempted: 0},
-		{P_Completed: 0},
-		{ArrowTutorial: 0},
-		{ArrowTutorialWaitTime: 0},
-		{TapImageTutorial: 0},
-		{TapImageTutorialWaitTime: 0},
-		{Ph_P_SetNumber: 0},
+		{DragDrop: 0},
+		{LettersFilled: 0},
+		{LettersOutlined: 0},
+		{CurrentGame: 0},
+		{CurrentLevel: 0},
 		{AttemptDate: 0},
 		{AttemptTotalTime: 0},
 		{BackButtonTapped: 0},
@@ -3444,6 +3439,128 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{IdleTap: 0},
 		{TimePaused: 0},
 		{CurrentAudio: 0},
+		{P_L1_BushTappedCorrect: 0},
+		{P_L1_BushTappedIncorrect: 0},
+		{P_L1_ShirtTappedCorrect: 0},
+		{P_L1_ShirtTappedIncorrect: 0},
+		{P_L1_SharkTappedCorrect: 0},
+		{P_L1_SharkTappedIncorrect: 0},
+		{P_L1_SheepTappedCorrect: 0},
+		{P_L1_SheepTappedIncorrect: 0},
+		{P_L1_DishTappedCorrect: 0},
+		{P_L1_DishTappedIncorrect: 0},
+		{P_L1_ShopTappedCorrect: 0},
+		{P_L1_ShopTappedIncorrect: 0},
+		{P_L1_FishTappedCorrect: 0},
+		{P_L1_FishTappedIncorrect: 0},
+		{P_L1_ShipTappedCorrect: 0},
+		{P_L1_ShipTappedIncorrect: 0},
+		{P_L1_ShelfTappedCorrect: 0},
+		{P_L1_ShelfTappedIncorrect: 0},
+		{P_L1_ShellTappedCorrect: 0},
+		{P_L1_ShellTappedIncorrect: 0},
+		{P_L1_BrushTappedCorrect: 0},
+		{P_L1_BrushTappedIncorrect: 0},
+		{P_L1_CashTappedCorrect: 0},
+		{P_L1_CashTappedIncorrect: 0},
+		{P_L1_ChurchTappedCorrect: 0},
+		{P_L1_ChurchTappedIncorrect: 0},
+		{P_L1_TorchTappedCorrect: 0},
+		{P_L1_TorchTappedIncorrect: 0},
+		{P_L1_ChairTappedCorrect: 0},
+		{P_L1_ChairTappedIncorrect: 0},
+		{P_L1_ChilliTappedCorrect: 0},
+		{P_L1_ChilliTappedIncorrect: 0},
+		{P_L1_BranchTappedCorrect: 0},
+		{P_L1_BranchTappedIncorrect: 0},
+		{P_L1_BenchTappedCorrect: 0},
+		{P_L1_BenchTappedIncorrect: 0},
+		{P_L1_ConchTappedCorrect: 0},
+		{P_L1_ConchTappedIncorrect: 0},
+		{P_L1_ChestTappedCorrect: 0},
+		{P_L1_ChestTappedIncorrect: 0},
+		{P_L1_OstrichTappedCorrect: 0},
+		{P_L1_OstrichTappedIncorrect: 0},
+		{P_L1_ChinTappedCorrect: 0},
+		{P_L1_ChinTappedIncorrect: 0},
+		{P_L1_ChickTappedCorrect: 0},
+		{P_L1_ChickTappedIncorrect: 0},
+		{P_L1_ThornTappedCorrect: 0},
+		{P_L1_ThornTappedIncorrect: 0},
+		{P_L1_BathTappedCorrect: 0},
+		{P_L1_BathTappedIncorrect: 0},
+		{P_L1_ThiefTappedCorrect: 0},
+		{P_L1_ThiefTappedIncorrect: 0},
+		{P_L1_ClothTappedCorrect: 0},
+		{P_L1_ClothTappedIncorrect: 0},
+		{P_L1_TeethTappedCorrect: 0},
+		{P_L1_TeethTappedIncorrect: 0},
+		{P_L1_ThumbTappedCorrect: 0},
+		{P_L1_ThumbTappedIncorrect: 0},
+		{P_L1_MothTappedCorrect: 0},
+		{P_L1_MothTappedIncorrect: 0},
+		{P_L1_SlothTappedCorrect: 0},
+		{P_L1_SlothTappedIncorrect: 0},
+		{P_L1_PathTappedCorrect: 0},
+		{P_L1_PathTappedIncorrect: 0},
+		{P_L1_ThrushTappedCorrect: 0},
+		{P_L1_ThrushTappedIncorrect: 0},
+		{P_L1_WhaleTappedCorrect: 0},
+		{P_L1_WhaleTappedIncorrect: 0},
+		{P_L1_WharfTappedCorrect: 0},
+		{P_L1_WharfTappedIncorrect: 0},
+		{P_L1_WheelTappedCorrect: 0},
+		{P_L1_WheelTappedIncorrect: 0},
+		{P_L1_WhistleTappedCorrect: 0},
+		{P_L1_WhistleTappedIncorrect: 0},
+		{P_L1_WhiteTappedCorrect: 0},
+		{P_L1_WhiteTappedIncorrect: 0},
+		{P_L1_WhiskTappedCorrect: 0},
+		{P_L1_WhiskTappedIncorrect: 0},
+		{P_L1_WhipTappedCorrect: 0},
+		{P_L1_WhipTappedIncorrect: 0},
+		{P_L1_QueenTappedCorrect: 0},
+		{P_L1_QueenTappedIncorrect: 0},
+		{P_L1_SquareTappedCorrect: 0},
+		{P_L1_SquareTappedIncorrect: 0},
+		{P_L1_QuillTappedCorrect: 0},
+		{P_L1_QuillTappedIncorrect: 0},
+		{P_L1_SquidTappedCorrect: 0},
+		{P_L1_SquidTappedIncorrect: 0},
+		{P_L1_QuiltTappedCorrect: 0},
+		{P_L1_QuiltTappedIncorrect: 0},
+		{P_L1_PhotoTappedCorrect: 0},
+		{P_L1_PhotoTappedIncorrect: 0},
+		{P_L1_PharoahTappedCorrect: 0},
+		{P_L1_PharoahTappedIncorrect: 0},
+		{P_L1_PhoneTappedCorrect: 0},
+		{P_L1_PhoneTappedIncorrect: 0},
+		{P_L1_SphereTappedCorrect: 0},
+		{P_L1_SphereTappedIncorrect: 0},
+		{P_L1_TrophyTappedCorrect: 0},
+		{P_L1_TrophyTappedIncorrect: 0},
+		{P_L1_TyphoonTappedCorrect: 0},
+		{P_L1_TyphoonTappedIncorrect: 0},
+		{P_L1_DolphinTappedCorrect: 0},
+		{P_L1_DolphinTappedIncorrect: 0},
+		{P_L1_ElephantTappedCorrect: 0},
+		{P_L1_ElephantTappedIncorrect: 0},
+		{P_L1_GraphTappedCorrect: 0},
+		{P_L1_GraphTappedIncorrect: 0},
+		{L1_Attempted: 0},
+		{L1_Completed: 0},
+		{L1_CurrentWord: 0},
+		{L1_Option1: 0},
+		{L1_Option2: 0},
+		{L1_Option3: 0},
+		{L1_Option4: 0},
+		{L1_Option5: 0},
+		{L1_WordSet: 0},
+		{L1_WrongChoice: 0},
+		{L1_ArraySet: 0},
+		{L1_Destroy: 0},
+		{L1_End: 0},
+		{L1_HintTapped: 0},
 		{L1_TimeSpent: 0},
 		{L1_TutorialCompleted: 0},
 		{L1_TutorialStep: 0},
@@ -3569,6 +3686,9 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{L2_ArraySet: 0},
 		{L2_End: 0},
 		{L2_HintTapped: 0},
+		{L2_TimeSpent: 0},
+		{L2_TutorialCompleted: 0},
+		{L2_TutorialStep: 0},
 		{P_L3_BushTappedCorrect: 0},
 		{P_L3_BushTappedIncorrect: 0},
 		{P_L3_ShirtTappedCorrect: 0},
@@ -3693,133 +3813,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{L3_Flip: 0},
 		{L3_End: 0},
 		{L3_HintTapped: 0},
-		{CurrentGame: 0},
-		{CurrentLevel: 0},
-		{P_L1_BushTappedCorrect: 0},
-		{P_L1_BushTappedIncorrect: 0},
-		{P_L1_ShirtTappedCorrect: 0},
-		{P_L1_ShirtTappedIncorrect: 0},
-		{P_L1_SharkTappedCorrect: 0},
-		{P_L1_SharkTappedIncorrect: 0},
-		{P_L1_SheepTappedCorrect: 0},
-		{P_L1_SheepTappedIncorrect: 0},
-		{P_L1_DishTappedCorrect: 0},
-		{P_L1_DishTappedIncorrect: 0},
-		{P_L1_ShopTappedCorrect: 0},
-		{P_L1_ShopTappedIncorrect: 0},
-		{P_L1_FishTappedCorrect: 0},
-		{P_L1_FishTappedIncorrect: 0},
-		{P_L1_ShipTappedCorrect: 0},
-		{P_L1_ShipTappedIncorrect: 0},
-		{P_L1_ShelfTappedCorrect: 0},
-		{P_L1_ShelfTappedIncorrect: 0},
-		{P_L1_ShellTappedCorrect: 0},
-		{P_L1_ShellTappedIncorrect: 0},
-		{P_L1_BrushTappedCorrect: 0},
-		{P_L1_BrushTappedIncorrect: 0},
-		{P_L1_CashTappedCorrect: 0},
-		{P_L1_CashTappedIncorrect: 0},
-		{P_L1_ChurchTappedCorrect: 0},
-		{P_L1_ChurchTappedIncorrect: 0},
-		{P_L1_TorchTappedCorrect: 0},
-		{P_L1_TorchTappedIncorrect: 0},
-		{P_L1_ChairTappedCorrect: 0},
-		{P_L1_ChairTappedIncorrect: 0},
-		{P_L1_ChilliTappedCorrect: 0},
-		{P_L1_ChilliTappedIncorrect: 0},
-		{P_L1_BranchTappedCorrect: 0},
-		{P_L1_BranchTappedIncorrect: 0},
-		{P_L1_BenchTappedCorrect: 0},
-		{P_L1_BenchTappedIncorrect: 0},
-		{P_L1_ConchTappedCorrect: 0},
-		{P_L1_ConchTappedIncorrect: 0},
-		{P_L1_ChestTappedCorrect: 0},
-		{P_L1_ChestTappedIncorrect: 0},
-		{P_L1_OstrichTappedCorrect: 0},
-		{P_L1_OstrichTappedIncorrect: 0},
-		{P_L1_ChinTappedCorrect: 0},
-		{P_L1_ChinTappedIncorrect: 0},
-		{P_L1_ChickTappedCorrect: 0},
-		{P_L1_ChickTappedIncorrect: 0},
-		{P_L1_ThornTappedCorrect: 0},
-		{P_L1_ThornTappedIncorrect: 0},
-		{P_L1_BathTappedCorrect: 0},
-		{P_L1_BathTappedIncorrect: 0},
-		{P_L1_ThiefTappedCorrect: 0},
-		{P_L1_ThiefTappedIncorrect: 0},
-		{P_L1_ClothTappedCorrect: 0},
-		{P_L1_ClothTappedIncorrect: 0},
-		{P_L1_TeethTappedCorrect: 0},
-		{P_L1_TeethTappedIncorrect: 0},
-		{P_L1_ThumbTappedCorrect: 0},
-		{P_L1_ThumbTappedIncorrect: 0},
-		{P_L1_MothTappedCorrect: 0},
-		{P_L1_MothTappedIncorrect: 0},
-		{P_L1_SlothTappedCorrect: 0},
-		{P_L1_SlothTappedIncorrect: 0},
-		{P_L1_PathTappedCorrect: 0},
-		{P_L1_PathTappedIncorrect: 0},
-		{P_L1_ThrushTappedCorrect: 0},
-		{P_L1_ThrushTappedIncorrect: 0},
-		{P_L1_WhaleTappedCorrect: 0},
-		{P_L1_WhaleTappedIncorrect: 0},
-		{P_L1_WharfTappedCorrect: 0},
-		{P_L1_WharfTappedIncorrect: 0},
-		{P_L1_WheelTappedCorrect: 0},
-		{P_L1_WheelTappedIncorrect: 0},
-		{P_L1_WhistleTappedCorrect: 0},
-		{P_L1_WhistleTappedIncorrect: 0},
-		{P_L1_WhiteTappedCorrect: 0},
-		{P_L1_WhiteTappedIncorrect: 0},
-		{P_L1_WhiskTappedCorrect: 0},
-		{P_L1_WhiskTappedIncorrect: 0},
-		{P_L1_WhipTappedCorrect: 0},
-		{P_L1_WhipTappedIncorrect: 0},
-		{P_L1_QueenTappedCorrect: 0},
-		{P_L1_QueenTappedIncorrect: 0},
-		{P_L1_SquareTappedCorrect: 0},
-		{P_L1_SquareTappedIncorrect: 0},
-		{P_L1_QuillTappedCorrect: 0},
-		{P_L1_QuillTappedIncorrect: 0},
-		{P_L1_SquidTappedCorrect: 0},
-		{P_L1_SquidTappedIncorrect: 0},
-		{P_L1_QuiltTappedCorrect: 0},
-		{P_L1_QuiltTappedIncorrect: 0},
-		{P_L1_PhotoTappedCorrect: 0},
-		{P_L1_PhotoTappedIncorrect: 0},
-		{P_L1_PharoahTappedCorrect: 0},
-		{P_L1_PharoahTappedIncorrect: 0},
-		{P_L1_PhoneTappedCorrect: 0},
-		{P_L1_PhoneTappedIncorrect: 0},
-		{P_L1_SphereTappedCorrect: 0},
-		{P_L1_SphereTappedIncorrect: 0},
-		{P_L1_TrophyTappedCorrect: 0},
-		{P_L1_TrophyTappedIncorrect: 0},
-		{P_L1_TyphoonTappedCorrect: 0},
-		{P_L1_TyphoonTappedIncorrect: 0},
-		{P_L1_DolphinTappedCorrect: 0},
-		{P_L1_DolphinTappedIncorrect: 0},
-		{P_L1_ElephantTappedCorrect: 0},
-		{P_L1_ElephantTappedIncorrect: 0},
-		{P_L1_GraphTappedCorrect: 0},
-		{P_L1_GraphTappedIncorrect: 0},
-		{L1_Attempted: 0},
-		{L1_Completed: 0},
-		{L1_CurrentWord: 0},
-		{L1_Option1: 0},
-		{L1_Option2: 0},
-		{L1_Option3: 0},
-		{L1_Option4: 0},
-		{L1_Option5: 0},
-		{L1_WordSet: 0},
-		{L1_WrongChoice: 0},
-		{L1_ArraySet: 0},
-		{L1_Destroy: 0},
-		{L1_End: 0},
-		{L1_HintTapped: 0},
-		{L2_TimeSpent: 0},
-		{L2_TutorialCompleted: 0},
-		{L2_TutorialStep: 0},
 		{L3_TimeSpent: 0},
 		{L3_TutorialCompleted: 0},
 		{L3_TutorialStep: 0},
@@ -3987,7 +3980,73 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		{Attempts_S6_L7: 0},
 		{L4_TimeSpent: 0},
 		{L4_TutorialCompleted: 0},
-		{L4_TutorialStep: 0}
+		{L4_TutorialStep: 0},
+		{P_BushTapped: 0},
+		{P_SheepTapped: 0},
+		{P_SharkTapped: 0},
+		{P_ShirtTapped: 0},
+		{P_BrushTapped: 0},
+		{P_DishTapped: 0},
+		{P_CashTapped: 0},
+		{P_ShopTapped: 0},
+		{P_FishTapped: 0},
+		{P_ShipTapped: 0},
+		{P_ShelfTapped: 0},
+		{P_ShellTapped: 0},
+		{P_ChurchTapped: 0},
+		{P_TorchTapped: 0},
+		{P_BranchTapped: 0},
+		{P_ChairTapped: 0},
+		{P_ChilliTapped: 0},
+		{P_BenchTapped: 0},
+		{P_ConchTapped: 0},
+		{P_ChestTapped: 0},
+		{P_OstrichTapped: 0},
+		{P_ChinTapped: 0},
+		{P_ChickTapped: 0},
+		{P_ThornTapped: 0},
+		{P_BathTapped: 0},
+		{P_ThiefTapped: 0},
+		{P_TeethTapped: 0},
+		{P_ThumbTapped: 0},
+		{P_MothTapped: 0},
+		{P_SlothTapped: 0},
+		{P_ClothTapped: 0},
+		{P_ThrushTapped: 0},
+		{P_PathTapped: 0},
+		{P_WhaleTapped: 0},
+		{P_WharfTapped: 0},
+		{P_WheelTapped: 0},
+		{P_WhistleTapped: 0},
+		{P_WhiteTapped: 0},
+		{P_WhiskTapped: 0},
+		{P_WhipTapped: 0},
+		{P_QueenTapped: 0},
+		{P_SquareTapped: 0},
+		{P_QuillTapped: 0},
+		{P_SquidTapped: 0},
+		{P_QuiltTapped: 0},
+		{P_PhotoTapped: 0},
+		{P_PharoahTapped: 0},
+		{P_PhoneTapped: 0},
+		{P_SphereTapped: 0},
+		{P_TrophyTapped: 0},
+		{P_TyphoonTapped: 0},
+		{P_DolphinTapped: 0},
+		{P_ElephantTapped: 0},
+		{P_GraphTapped: 0},
+		{PresentationTimeSpent: 0},
+		{P_Attempted: 0},
+		{P_Completed: 0},
+		{ArrowTutorial: 0},
+		{ArrowTutorialWaitTime: 0},
+		{TapImageTutorial: 0},
+		{TapImageTutorialWaitTime: 0},
+		{Ph_P_SetNumber: 0},
+		{PI_L0_CurrentPhonograph: 0},
+		{BoxEnabled: 0},
+		{PI_L0_Completed: 0},
+		{PI_L0_Shrinking: 0}
 	];
 }
 
@@ -4144,187 +4203,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => "S1_L2",
 		() => "Time Pause L4 S1 L5",
-		() => "Inactive",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L0_1" + v0.GetValue());
-		},
-		() => "VB_A_L0_1",
-		() => "Phonograph Data L0",
-		() => "Time Pause L0",
-		() => "Phonograph Mascot L0",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L0_2" + v0.GetValue());
-		},
-		() => "VB_A_L0_2",
-		() => 330,
-		() => 340,
-		() => 530,
-		() => "Explain",
-		() => 765,
-		() => 380,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L0_3" + v0.GetValue());
-		},
-		() => "VB_A_L0_3",
-		() => "VB_A_L0_4",
-		() => 14,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_3" + v0.GetValue());
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() + 20);
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 140);
-		},
-		() => "P_ImageSound",
-		() => "Navigation Arrows",
-		() => 12,
-		() => "VB_A_L0_5_1",
-		() => "VB_A_L0_5_2",
-		() => -150,
-		() => 235,
-		() => 13,
-		() => "Smile",
-		() => 1200,
-		() => 385,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L0_4" + v0.GetValue());
-		},
-		() => "VB_A_L04",
-		() => "Arrow Tutorial",
-		() => 427,
-		() => 550,
-		() => "VB_A_L0_5",
-		() => "VB_A_L0_5_3",
-		() => 10,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L0_5_3" + v0.GetValue());
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => n0.ExpObject();
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() + 50);
-		},
-		() => 5,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L0_5" + v0.GetValue());
-		},
-		() => 4,
-		() => "Tap Image Tutorial",
-		() => "Set Cycles",
-		() => "Set 1 - Sheep, Bush, Shark, Shirt",
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() + 80);
-		},
-		() => "Set 2 - Shop, Fish, Ship, Shelf",
-		() => "Set 3 - Cash, Shell, Brush, Dish",
-		() => "Set 4 - Chair, Chilli, Torch, Church",
-		() => "Set 5 - Chest, Chin, Conch, Ostrich ",
-		() => "Set 6 - Bench, Branch, Chick",
-		() => 6,
-		() => "Set 7 - Thorn, Thief, Bath, Cloth, Teeth",
-		() => 7,
-		() => 627,
-		() => 227,
-		() => "Set 8 - Thrush, Path, Moth, Thumb, Sloth",
-		() => 8,
-		() => "Set 9 - Whistle, Wharf, Whale, Wheel",
-		() => 9,
-		() => "Set 10 - Whisk, Whip, White",
-		() => "Set 11 - Quilt, Square, Queen, Squid, Quill",
-		() => 11,
-		() => "Set 12 - Phone, Pharaoh, Photo, Sphere",
-		() => "Set 13 - Dolphin, Elephant, Trophy, Graph, Typhoon",
-		() => "UI",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_7" + v0.GetValue());
-		},
-		() => "GL_A_7",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_1" + v0.GetValue());
-		},
-		() => "Music L0",
-		() => "BGMusic",
-		() => -25,
-		() => "",
-		() => "None",
-		() => "Get Variables from Storage L0",
-		() => "Check Item L0",
-		() => "PresentationTimeSpent",
-		() => "P_Attempted",
-		() => "P_Completed",
-		() => "P_BushTapped",
-		() => "P_ShirtTapped",
-		() => "P_SharkTapped",
-		() => "P_SheepTapped",
-		() => "P_DishTapped",
-		() => "P_ShopTapped",
-		() => "P_FishTapped",
-		() => "P_ShipTapped",
-		() => "P_ShelfTapped",
-		() => "P_ShellTapped",
-		() => "P_BrushTapped",
-		() => "P_CashTapped",
-		() => "P_ChurchTapped",
-		() => "P_TorchTapped",
-		() => "P_ChairTapped",
-		() => "P_ChilliTapped",
-		() => "P_BranchTapped",
-		() => "P_BenchTapped",
-		() => "P_ConchTapped",
-		() => "P_ChestTapped",
-		() => "P_OstrichTapped",
-		() => "P_ChinTapped",
-		() => "P_ChickTapped",
-		() => "P_ThornTapped",
-		() => "P_BathTapped",
-		() => "P_ThiefTapped",
-		() => "P_ClothTapped",
-		() => "P_TeethTapped",
-		() => "P_ThumbTapped",
-		() => "P_MothTapped",
-		() => "P_SlothTapped",
-		() => "P_PathTapped",
-		() => "P_ThrushTapped",
-		() => "P_WhaleTapped",
-		() => "P_WharfTapped",
-		() => "P_WheelTapped",
-		() => "P_WhistleTapped",
-		() => "P_WhiteTapped",
-		() => "P_WhiskTapped",
-		() => "P_WhipTapped",
-		() => "P_QueenTapped",
-		() => "P_SquareTapped",
-		() => "P_QuillTapped",
-		() => "P_SquidTapped",
-		() => "P_QuiltTapped",
-		() => "P_PhotoTapped",
-		() => "P_PharoahTapped",
-		() => "P_PhoneTapped",
-		() => "P_SphereTapped",
-		() => "P_TrophyTapped",
-		() => "P_TyphoonTapped",
-		() => "P_DolphinTapped",
-		() => "P_ElephantTapped",
-		() => "P_GraphTapped",
-		() => "Get Image Taps L0",
-		() => "Set Image Taps End L0",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			const v1 = p._GetNode(1).GetVar();
@@ -4336,6 +4214,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => (and((((and((((and((((and(((and(((and(((and(((("Number of taps:" + "\n") + "\n") + "Sheep: "), v0.GetValue()) + "\n") + "Shark: "), v1.GetValue()) + "\n") + "Bush: "), v2.GetValue()) + "\n") + "Shirt: "), v3.GetValue()) + "\n") + "\n") + "Total time: "), v4.GetValue()) + " seconds") + "\n") + "Level Attempted: "), v5.GetValue()) + " times") + "\n") + "Level Completed: "), v6.GetValue()) + " times");
 		},
 		() => "Set Array Words L1",
+		() => "",
 		() => 54,
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -4350,16 +4229,27 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "Shirt",
 		() => "Shark",
 		() => "Sheep",
+		() => 4,
 		() => "Dish",
+		() => 5,
 		() => "Shop",
+		() => 6,
 		() => "Fish",
+		() => 7,
 		() => "Ship",
+		() => 8,
 		() => "Shelf",
+		() => 9,
 		() => "Shell",
+		() => 10,
 		() => "Brush",
+		() => 11,
 		() => "Cash",
+		() => 12,
 		() => "Church",
+		() => 13,
 		() => "Torch",
+		() => 14,
 		() => "Chair",
 		() => 15,
 		() => "Chilli",
@@ -4473,6 +4363,215 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => f0(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 		},
 		() => "Level1",
+		() => "Phonograph Data L1",
+		() => "Get Variables from Storage L1",
+		() => "Check Item L1",
+		() => "L1_TimeSpent",
+		() => "L1_Attempted",
+		() => "L1_Completed",
+		() => "P_L1_BushTappedCorrect",
+		() => "P_L1_ShirtTappedCorrect",
+		() => "P_L1_SharkTappedCorrect",
+		() => "P_L1_SheepTappedCorrect",
+		() => "P_L1_DishTappedCorrect",
+		() => "P_L1_ShopTappedCorrect",
+		() => "P_L1_FishTappedCorrect",
+		() => "P_L1_ShipTappedCorrect",
+		() => "P_L1_ShelfTappedCorrect",
+		() => "P_L1_ShellTappedCorrect",
+		() => "P_L1_BrushTappedCorrect",
+		() => "P_L1_CashTappedCorrect",
+		() => "P_L1_ChurchTappedCorrect",
+		() => "P_L1_TorchTappedCorrect",
+		() => "P_L1_ChairTappedCorrect",
+		() => "P_L1_ChilliTappedCorrect",
+		() => "P_L1_BranchTappedCorrect",
+		() => "P_L1_BenchTappedCorrect",
+		() => "P_L1_ConchTappedCorrect",
+		() => "P_L1_ChestTappedCorrect",
+		() => "P_L1_OstrichTappedCorrect",
+		() => "P_L1_ChinTappedCorrect",
+		() => "P_L1_ChickTappedCorrect",
+		() => "P_L1_ThornTappedCorrect",
+		() => "P_L1_BathTappedCorrect",
+		() => "P_L1_ThiefTappedCorrect",
+		() => "P_L1_ClothTappedCorrect",
+		() => "P_L1_TeethTappedCorrect",
+		() => "P_L1_ThumbTappedCorrect",
+		() => "P_L1_MothTappedCorrect",
+		() => "P_L1_SlothTappedCorrect",
+		() => "P_L1_PathTappedCorrect",
+		() => "P_L1_ThrushTappedCorrect",
+		() => "P_L1_WhaleTappedCorrect",
+		() => "P_L1_WharfTappedCorrect",
+		() => "P_L1_WheelTappedCorrect",
+		() => "P_L1_WhistleTappedCorrect",
+		() => "P_L1_WhiteTappedCorrect",
+		() => "P_L1_WhiskTappedCorrect",
+		() => "P_L1_WhipTappedCorrect",
+		() => "P_L1_QueenTappedCorrect",
+		() => "P_L1_SquareTappedCorrect",
+		() => "P_L1_QuillTappedCorrect",
+		() => "P_L1_SquidTappedCorrect",
+		() => "P_L1_QuiltTappedCorrect",
+		() => "P_L1_PhotoTappedCorrect",
+		() => "P_L1_PharoahTappedCorrect",
+		() => "P_L1_PhoneTappedCorrect",
+		() => "P_L1_SphereTappedCorrect",
+		() => "P_L1_TrophyTappedCorrect",
+		() => "P_L1_TyphoonTappedCorrect",
+		() => "P_L1_DolphinTappedCorrect",
+		() => "P_L1_ElephantTappedCorrect",
+		() => "P_L1_GraphTappedCorrect",
+		() => "P_L1_BushTappedIncorrect",
+		() => "P_L1_ShirtTappedIncorrect",
+		() => "P_L1_SharkTappedIncorrect",
+		() => "P_L1_SheepTappedIncorrect",
+		() => "P_L1_DishTappedIncorrect",
+		() => "P_L1_ShopTappedIncorrect",
+		() => "P_L1_FishTappedIncorrect",
+		() => "P_L1_ShipTappedIncorrect",
+		() => "P_L1_ShelfTappedIncorrect",
+		() => "P_L1_ShellTappedIncorrect",
+		() => "P_L1_BrushTappedIncorrect",
+		() => "P_L1_CashTappedIncorrect",
+		() => "P_L1_ChurchTappedIncorrect",
+		() => "P_L1_TorchTappedIncorrect",
+		() => "P_L1_ChairTappedIncorrect",
+		() => "P_L1_ChilliTappedIncorrect",
+		() => "P_L1_BranchTappedIncorrect",
+		() => "P_L1_BenchTappedIncorrect",
+		() => "P_L1_ConchTappedIncorrect",
+		() => "P_L1_ChestTappedIncorrect",
+		() => "P_L1_OstrichTappedIncorrect",
+		() => "P_L1_ChinTappedIncorrect",
+		() => "P_L1_ChickTappedIncorrect",
+		() => "P_L1_ThornTappedIncorrect",
+		() => "P_L1_BathTappedIncorrect",
+		() => "P_L1_ThiefTappedIncorrect",
+		() => "P_L1_ClothTappedIncorrect",
+		() => "P_L1_TeethTappedIncorrect",
+		() => "P_L1_ThumbTappedIncorrect",
+		() => "P_L1_MothTappedIncorrect",
+		() => "P_L1_SlothTappedIncorrect",
+		() => "P_L1_PathTappedIncorrect",
+		() => "P_L1_ThrushTappedIncorrect",
+		() => "P_L1_WhaleTappedIncorrect",
+		() => "P_L1_WharfTappedIncorrect",
+		() => "P_L1_WheelTappedIncorrect",
+		() => "P_L1_WhistleTappedIncorrect",
+		() => "P_L1_WhiteTappedIncorrect",
+		() => "P_L1_WhiskTappedIncorrect",
+		() => "P_L1_WhipTappedIncorrect",
+		() => "P_L1_QueenTappedIncorrect",
+		() => "P_L1_SquareTappedIncorrect",
+		() => "P_L1_QuillTappedIncorrect",
+		() => "P_L1_SquidTappedIncorrect",
+		() => "P_L1_QuiltTappedIncorrect",
+		() => "P_L1_PhotoTappedIncorrect",
+		() => "P_L1_PharoahTappedIncorrect",
+		() => "P_L1_PhoneTappedIncorrect",
+		() => "P_L1_SphereTappedIncorrect",
+		() => "P_L1_TrophyTappedIncorrect",
+		() => "P_L1_TyphoonTappedIncorrect",
+		() => "P_L1_DolphinTappedIncorrect",
+		() => "P_L1_ElephantTappedIncorrect",
+		() => "P_L1_GraphTappedIncorrect",
+		() => "Get Image Taps L1",
+		() => "Set Image Taps End L1",
+		() => "Time Pause L1",
+		() => "UI L1",
+		() => "P_L1_ImageSound",
+		() => "CorrectSound",
+		() => "IncorrectSound",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_17" + v0.GetValue());
+		},
+		() => 0.1,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_2" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_1" + v0.GetValue());
+		},
+		() => "BGMusic",
+		() => "Music L1",
+		() => -25,
+		() => "Inactive",
+		() => "GL_A_5",
+		() => "None",
+		() => "Set Board L1",
+		() => 427,
+		() => 120,
+		() => 237,
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("shell_i", "brush_i", "cash_i", "church_i", "torch_i", "chair_i", "chilli_i", "branch_i", "bench_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("conch_i", "chest_i", "ostrich_i", "chin_i", "chick_i", "thorn_i", "bath_i", "thief_i", "cloth_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("teeth_i", "thumb_i", "moth_i", "sloth_i", "path_i", "thrush_i", "whale_i", "wharf_i", "wheel_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("whistle_i", "white_i", "whisk_i", "whip_i", "queen_i", "square_i", "quill_i", "squid_i", "quilt_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("photo_i", "pharoah_i", "phone_i", "sphere_i", "trophy_i", "typhoon_i", "dolphin_i", "elephant_i", "graph_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0(1, 2, 3, 4, 6);
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("bush_i", "shirt_i", "shark_i", "sheep_i", "dish_i", "shop_i", "fish_i", "ship_i", "shelf_i");
+		},
+		() => "Randomizer L1",
+		() => 617,
+		() => 410,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => (v0.GetValue() + "_i");
+		},
+		() => "Word Checker L1",
+		() => "Destroyer L1",
+		p => {
+			const n0 = p._GetNode(0);
+			return () => n0.ExpObject();
+		},
+		() => 1000,
+		p => {
+			const n0 = p._GetNode(0);
+			const n1 = p._GetNode(1);
+			return () => and(and(n0.ExpObject(), " "), n1.ExpObject(0));
+		},
+		() => "Progress Bar L1",
+		() => "LevelCompletionSound",
+		() => 790,
+		() => 380,
+		() => "Smile",
+		() => "Explain",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_5" + v0.GetValue());
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 15);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 140);
+		},
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L1_1" + v0.GetValue());
@@ -4481,9 +4580,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "Phonograph Data L1 Tutorial",
 		() => "Get Variables from Storage L1 Tutorial",
 		() => "Check Item L1 Tutorial",
-		() => "L1_TimeSpent",
-		() => "L1_Attempted",
-		() => "L1_Completed",
 		() => "Time Pause L1 Tutorial",
 		() => "Phonograph Tutorial L1",
 		p => {
@@ -4497,12 +4593,9 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => "VB_A_L1_3",
 		() => 835,
-		() => 237,
 		() => "Ph_L1_Tutorial_Church",
 		() => "Ph_L1_Tutorial_Ship",
-		() => 617,
 		() => "Ph_L1_Tutorial_Thumb",
-		() => 410,
 		() => "Ph_L1_Tutorial_Bench",
 		() => "Ph_L1_Tutorial_Shark",
 		() => "Ph_L1_Tutorial_Chest",
@@ -4511,8 +4604,9 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("VB_A_L1_4" + v0.GetValue());
 		},
 		() => "VB_A_L1_4",
+		() => -150,
+		() => 235,
 		() => 900,
-		() => 120,
 		() => "Ph_L1_Tutorial_Correct",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -4520,9 +4614,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		},
 		() => "VB_A_L1_5",
 		() => 2.5,
-		() => "CorrectSound",
 		() => 500,
-		() => 0.1,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L1_6" + v0.GetValue());
@@ -4533,6 +4625,10 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => ("VB_A_L1_7" + v0.GetValue());
 		},
 		() => "VB_A_L1_7",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_3" + v0.GetValue());
+		},
 		() => 325,
 		p => {
 			const n0 = p._GetNode(0);
@@ -4543,14 +4639,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			return () => (n0.ExpObject() - 165);
 		},
 		() => "Phonograph UI L1 Tutorial",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_17" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_2" + v0.GetValue());
-		},
+		() => "P_ImageSound",
 		() => "Music L1 Tutorial",
 		() => "Level2",
 		() => "Phonograph Data L2",
@@ -4672,70 +4761,73 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "Time Pause L2",
 		() => "UI L2",
 		() => "P_L2_ImageSound",
-		() => "IncorrectSound",
 		() => "Music L2",
-		() => "GL_A_5",
 		() => "Set Board L2",
 		() => 740,
 		() => 220,
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("shell_i", "brush_i", "cash_i", "church_i", "torch_i", "chair_i", "chilli_i", "branch_i", "bench_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("conch_i", "chest_i", "ostrich_i", "chin_i", "chick_i", "thorn_i", "bath_i", "thief_i", "cloth_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("teeth_i", "thumb_i", "moth_i", "sloth_i", "path_i", "thrush_i", "whale_i", "wharf_i", "wheel_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("whistle_i", "white_i", "whisk_i", "whip_i", "queen_i", "square_i", "quill_i", "squid_i", "quilt_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("photo_i", "pharoah_i", "phone_i", "sphere_i", "trophy_i", "typhoon_i", "dolphin_i", "elephant_i", "graph_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0(1, 2, 3, 4, 6);
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("bush_i", "shirt_i", "shark_i", "sheep_i", "dish_i", "shop_i", "fish_i", "ship_i", "shelf_i");
-		},
 		() => "Randomizer L2",
 		() => 140,
 		() => 400,
 		() => 425,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => (v0.GetValue() + "_i");
-		},
 		() => "Word Checker L2",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => (v0.GetValue() + "TA");
 		},
 		() => "Destroyer L2",
-		() => 1000,
 		() => 800,
-		p => {
-			const n0 = p._GetNode(0);
-			const n1 = p._GetNode(1);
-			return () => and(and(n0.ExpObject(), " "), n1.ExpObject(0));
-		},
 		() => "Progress Bar L2",
-		() => "LevelCompletionSound",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_5" + v0.GetValue());
+			return () => ("VB_A_L2_1" + v0.GetValue());
+		},
+		() => "VB_A_L2_1",
+		() => "Phonograph Data L2 Tutorial",
+		() => "Get Variables from Storage L1 Tutorial2",
+		() => "Check Item L1 Tutorial2",
+		() => "Time Pause L2 Tutorial",
+		() => "Phonograph UI L2 Tutorial",
+		() => "Music L2 Tutorial",
+		() => "VB_A_L2_2",
+		() => "VB_A_L2_3",
+		() => "VB_A_L2_4",
+		() => "VB_A_L2_5",
+		() => "VB_A_L2_6",
+		() => "VB_A_L2_7",
+		() => "Phonograph Tutorial L2",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_2" + v0.GetValue());
+		},
+		() => 795,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_3" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_4" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_5" + v0.GetValue());
+		},
+		() => "Bench Correct",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_6" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_7" + v0.GetValue());
 		},
 		p => {
 			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() + 15);
+			return () => (n0.ExpObject() - 135);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 80);
 		},
 		() => "Level3",
 		() => "Get Variables from Storage L3",
@@ -4880,181 +4972,6 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L3_4" + v0.GetValue());
 		},
-		() => 790,
-		() => "Phonograph Data L1",
-		() => "Get Variables from Storage L1",
-		() => "Check Item L1",
-		() => "P_L1_BushTappedCorrect",
-		() => "P_L1_ShirtTappedCorrect",
-		() => "P_L1_SharkTappedCorrect",
-		() => "P_L1_SheepTappedCorrect",
-		() => "P_L1_DishTappedCorrect",
-		() => "P_L1_ShopTappedCorrect",
-		() => "P_L1_FishTappedCorrect",
-		() => "P_L1_ShipTappedCorrect",
-		() => "P_L1_ShelfTappedCorrect",
-		() => "P_L1_ShellTappedCorrect",
-		() => "P_L1_BrushTappedCorrect",
-		() => "P_L1_CashTappedCorrect",
-		() => "P_L1_ChurchTappedCorrect",
-		() => "P_L1_TorchTappedCorrect",
-		() => "P_L1_ChairTappedCorrect",
-		() => "P_L1_ChilliTappedCorrect",
-		() => "P_L1_BranchTappedCorrect",
-		() => "P_L1_BenchTappedCorrect",
-		() => "P_L1_ConchTappedCorrect",
-		() => "P_L1_ChestTappedCorrect",
-		() => "P_L1_OstrichTappedCorrect",
-		() => "P_L1_ChinTappedCorrect",
-		() => "P_L1_ChickTappedCorrect",
-		() => "P_L1_ThornTappedCorrect",
-		() => "P_L1_BathTappedCorrect",
-		() => "P_L1_ThiefTappedCorrect",
-		() => "P_L1_ClothTappedCorrect",
-		() => "P_L1_TeethTappedCorrect",
-		() => "P_L1_ThumbTappedCorrect",
-		() => "P_L1_MothTappedCorrect",
-		() => "P_L1_SlothTappedCorrect",
-		() => "P_L1_PathTappedCorrect",
-		() => "P_L1_ThrushTappedCorrect",
-		() => "P_L1_WhaleTappedCorrect",
-		() => "P_L1_WharfTappedCorrect",
-		() => "P_L1_WheelTappedCorrect",
-		() => "P_L1_WhistleTappedCorrect",
-		() => "P_L1_WhiteTappedCorrect",
-		() => "P_L1_WhiskTappedCorrect",
-		() => "P_L1_WhipTappedCorrect",
-		() => "P_L1_QueenTappedCorrect",
-		() => "P_L1_SquareTappedCorrect",
-		() => "P_L1_QuillTappedCorrect",
-		() => "P_L1_SquidTappedCorrect",
-		() => "P_L1_QuiltTappedCorrect",
-		() => "P_L1_PhotoTappedCorrect",
-		() => "P_L1_PharoahTappedCorrect",
-		() => "P_L1_PhoneTappedCorrect",
-		() => "P_L1_SphereTappedCorrect",
-		() => "P_L1_TrophyTappedCorrect",
-		() => "P_L1_TyphoonTappedCorrect",
-		() => "P_L1_DolphinTappedCorrect",
-		() => "P_L1_ElephantTappedCorrect",
-		() => "P_L1_GraphTappedCorrect",
-		() => "P_L1_BushTappedIncorrect",
-		() => "P_L1_ShirtTappedIncorrect",
-		() => "P_L1_SharkTappedIncorrect",
-		() => "P_L1_SheepTappedIncorrect",
-		() => "P_L1_DishTappedIncorrect",
-		() => "P_L1_ShopTappedIncorrect",
-		() => "P_L1_FishTappedIncorrect",
-		() => "P_L1_ShipTappedIncorrect",
-		() => "P_L1_ShelfTappedIncorrect",
-		() => "P_L1_ShellTappedIncorrect",
-		() => "P_L1_BrushTappedIncorrect",
-		() => "P_L1_CashTappedIncorrect",
-		() => "P_L1_ChurchTappedIncorrect",
-		() => "P_L1_TorchTappedIncorrect",
-		() => "P_L1_ChairTappedIncorrect",
-		() => "P_L1_ChilliTappedIncorrect",
-		() => "P_L1_BranchTappedIncorrect",
-		() => "P_L1_BenchTappedIncorrect",
-		() => "P_L1_ConchTappedIncorrect",
-		() => "P_L1_ChestTappedIncorrect",
-		() => "P_L1_OstrichTappedIncorrect",
-		() => "P_L1_ChinTappedIncorrect",
-		() => "P_L1_ChickTappedIncorrect",
-		() => "P_L1_ThornTappedIncorrect",
-		() => "P_L1_BathTappedIncorrect",
-		() => "P_L1_ThiefTappedIncorrect",
-		() => "P_L1_ClothTappedIncorrect",
-		() => "P_L1_TeethTappedIncorrect",
-		() => "P_L1_ThumbTappedIncorrect",
-		() => "P_L1_MothTappedIncorrect",
-		() => "P_L1_SlothTappedIncorrect",
-		() => "P_L1_PathTappedIncorrect",
-		() => "P_L1_ThrushTappedIncorrect",
-		() => "P_L1_WhaleTappedIncorrect",
-		() => "P_L1_WharfTappedIncorrect",
-		() => "P_L1_WheelTappedIncorrect",
-		() => "P_L1_WhistleTappedIncorrect",
-		() => "P_L1_WhiteTappedIncorrect",
-		() => "P_L1_WhiskTappedIncorrect",
-		() => "P_L1_WhipTappedIncorrect",
-		() => "P_L1_QueenTappedIncorrect",
-		() => "P_L1_SquareTappedIncorrect",
-		() => "P_L1_QuillTappedIncorrect",
-		() => "P_L1_SquidTappedIncorrect",
-		() => "P_L1_QuiltTappedIncorrect",
-		() => "P_L1_PhotoTappedIncorrect",
-		() => "P_L1_PharoahTappedIncorrect",
-		() => "P_L1_PhoneTappedIncorrect",
-		() => "P_L1_SphereTappedIncorrect",
-		() => "P_L1_TrophyTappedIncorrect",
-		() => "P_L1_TyphoonTappedIncorrect",
-		() => "P_L1_DolphinTappedIncorrect",
-		() => "P_L1_ElephantTappedIncorrect",
-		() => "P_L1_GraphTappedIncorrect",
-		() => "Get Image Taps L1",
-		() => "Set Image Taps End L1",
-		() => "Time Pause L1",
-		() => "UI L1",
-		() => "P_L1_ImageSound",
-		() => "Music L1",
-		() => "Set Board L1",
-		() => "Randomizer L1",
-		() => "Word Checker L1",
-		() => "Destroyer L1",
-		() => "Progress Bar L1",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_1" + v0.GetValue());
-		},
-		() => "VB_A_L2_1",
-		() => "Phonograph Data L2 Tutorial",
-		() => "Get Variables from Storage L1 Tutorial2",
-		() => "Check Item L1 Tutorial2",
-		() => "Time Pause L2 Tutorial",
-		() => "Phonograph UI L2 Tutorial",
-		() => "Music L2 Tutorial",
-		() => "VB_A_L2_2",
-		() => "VB_A_L2_3",
-		() => "VB_A_L2_4",
-		() => "VB_A_L2_5",
-		() => "VB_A_L2_6",
-		() => "VB_A_L2_7",
-		() => "Phonograph Tutorial L2",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_2" + v0.GetValue());
-		},
-		() => 795,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_3" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_4" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_5" + v0.GetValue());
-		},
-		() => "Bench Correct",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_6" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_7" + v0.GetValue());
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 135);
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 80);
-		},
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L3_1" + v0.GetValue());
@@ -5183,6 +5100,8 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => 300,
 		() => 370,
 		() => "L3_S2",
+		() => 550,
+		() => 340,
 		() => 315,
 		() => 115,
 		() => "L4_S2",
@@ -5233,6 +5152,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "L1_S4",
 		() => 225,
 		() => 299,
+		() => 385,
 		() => "Story4",
 		() => 625,
 		() => "L2_S4",
@@ -5304,6 +5224,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => 345,
 		() => "Fish_L4_S6_L2_A",
 		() => "L3_S6",
+		() => 530,
 		() => "Whale_L4_S6_L3_A",
 		() => "L4_S6",
 		() => "Dolphin_L4_S1_A",
@@ -5313,6 +5234,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		() => "L6_S6",
 		() => 475,
 		() => 585,
+		() => 330,
 		() => 283,
 		() => "Shell_L4_S1_A",
 		() => "L7_S6",
@@ -5344,6 +5266,7 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L4_2" + v0.GetValue());
 		},
+		() => 1200,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L4_3" + v0.GetValue());
@@ -5355,7 +5278,282 @@ WaypointYAt(i){return this._GetWaypointYAt(i)}}};
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L4_5" + v0.GetValue());
-		}
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_1" + v0.GetValue());
+		},
+		() => "VB_A_L0_1",
+		() => "Phonograph Data L0",
+		() => "Time Pause L0",
+		() => "Phonograph Mascot L0",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_2" + v0.GetValue());
+		},
+		() => "VB_A_L0_2",
+		() => 765,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_3" + v0.GetValue());
+		},
+		() => "VB_A_L0_3",
+		() => "VB_A_L0_4",
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 20);
+		},
+		() => "Navigation Arrows",
+		() => "VB_A_L0_5_1",
+		() => "VB_A_L0_5_2",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_4" + v0.GetValue());
+		},
+		() => "VB_A_L04",
+		() => "Arrow Tutorial",
+		() => "VB_A_L0_5",
+		() => "VB_A_L0_5_3",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_5_3" + v0.GetValue());
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 50);
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L0_5" + v0.GetValue());
+		},
+		() => "Tap Image Tutorial",
+		() => "Set Cycles",
+		() => "Set 1 - Sheep, Bush, Shark, Shirt",
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 80);
+		},
+		() => "Set 2 - Shop, Fish, Ship, Shelf",
+		() => "Set 3 - Cash, Shell, Brush, Dish",
+		() => "Set 4 - Chair, Chilli, Torch, Church",
+		() => "Set 5 - Chest, Chin, Conch, Ostrich ",
+		() => "Set 6 - Bench, Branch, Chick",
+		() => "Set 7 - Thorn, Thief, Bath, Cloth, Teeth",
+		() => 627,
+		() => 227,
+		() => "Set 8 - Thrush, Path, Moth, Thumb, Sloth",
+		() => "Set 9 - Whistle, Wharf, Whale, Wheel",
+		() => "Set 10 - Whisk, Whip, White",
+		() => "Set 11 - Quilt, Square, Queen, Squid, Quill",
+		() => "Set 12 - Phone, Pharaoh, Photo, Sphere",
+		() => "Set 13 - Dolphin, Elephant, Trophy, Graph, Typhoon",
+		() => "UI",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_7" + v0.GetValue());
+		},
+		() => "GL_A_7",
+		() => "Music L0",
+		() => "Get Variables from Storage L0",
+		() => "Check Item L0",
+		() => "PresentationTimeSpent",
+		() => "P_Attempted",
+		() => "P_Completed",
+		() => "P_BushTapped",
+		() => "P_ShirtTapped",
+		() => "P_SharkTapped",
+		() => "P_SheepTapped",
+		() => "P_DishTapped",
+		() => "P_ShopTapped",
+		() => "P_FishTapped",
+		() => "P_ShipTapped",
+		() => "P_ShelfTapped",
+		() => "P_ShellTapped",
+		() => "P_BrushTapped",
+		() => "P_CashTapped",
+		() => "P_ChurchTapped",
+		() => "P_TorchTapped",
+		() => "P_ChairTapped",
+		() => "P_ChilliTapped",
+		() => "P_BranchTapped",
+		() => "P_BenchTapped",
+		() => "P_ConchTapped",
+		() => "P_ChestTapped",
+		() => "P_OstrichTapped",
+		() => "P_ChinTapped",
+		() => "P_ChickTapped",
+		() => "P_ThornTapped",
+		() => "P_BathTapped",
+		() => "P_ThiefTapped",
+		() => "P_ClothTapped",
+		() => "P_TeethTapped",
+		() => "P_ThumbTapped",
+		() => "P_MothTapped",
+		() => "P_SlothTapped",
+		() => "P_PathTapped",
+		() => "P_ThrushTapped",
+		() => "P_WhaleTapped",
+		() => "P_WharfTapped",
+		() => "P_WheelTapped",
+		() => "P_WhistleTapped",
+		() => "P_WhiteTapped",
+		() => "P_WhiskTapped",
+		() => "P_WhipTapped",
+		() => "P_QueenTapped",
+		() => "P_SquareTapped",
+		() => "P_QuillTapped",
+		() => "P_SquidTapped",
+		() => "P_QuiltTapped",
+		() => "P_PhotoTapped",
+		() => "P_PharoahTapped",
+		() => "P_PhoneTapped",
+		() => "P_SphereTapped",
+		() => "P_TrophyTapped",
+		() => "P_TyphoonTapped",
+		() => "P_DolphinTapped",
+		() => "P_ElephantTapped",
+		() => "P_GraphTapped",
+		() => "Get Image Taps L0",
+		() => "Set Image Taps End L0",
+		() => "P_ID_L0",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_1" + v0.GetValue());
+		},
+		() => "PI_A_L0_1",
+		() => "sh",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_2" + v0.GetValue());
+		},
+		() => "PI_A_L0_2",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_5" + v0.GetValue());
+		},
+		() => "PI_A_L0_5",
+		() => 468,
+		() => "SH",
+		() => "Open",
+		() => 377,
+		() => 195,
+		() => 515,
+		() => 117,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_3" + v0.GetValue());
+		},
+		() => "PI_A_L0_3",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_15" + v0.GetValue());
+		},
+		() => "GL_A_15",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_4" + v0.GetValue());
+		},
+		() => "PI_A_L0_4",
+		() => 132,
+		() => 595,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 65);
+		},
+		() => 1.5,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_6" + v0.GetValue());
+		},
+		() => "PI_A_L0_6",
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() * 0.97);
+		},
+		() => "Closed",
+		() => "ch",
+		() => "CH",
+		() => 1020,
+		() => 510,
+		() => 413,
+		() => 439,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_11" + v0.GetValue());
+		},
+		() => "GL_A_11",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_7" + v0.GetValue());
+		},
+		() => "PI_A_L0_7",
+		() => "th",
+		() => "TH",
+		() => 210,
+		() => 414,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_10" + v0.GetValue());
+		},
+		() => "GL_A_10",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_8" + v0.GetValue());
+		},
+		() => "PI_A_L0_8",
+		() => "wh",
+		() => "WH",
+		() => 445,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_14" + v0.GetValue());
+		},
+		() => "GL_A_14",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_9" + v0.GetValue());
+		},
+		() => "PI_A_L0_9",
+		() => "qu",
+		() => "QU",
+		() => 412,
+		() => 438,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_13" + v0.GetValue());
+		},
+		() => "GL_A_13",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_10" + v0.GetValue());
+		},
+		() => "PI_A_L0_10",
+		() => "ph",
+		() => "PH",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_12" + v0.GetValue());
+		},
+		() => "GL_A_12",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_11" + v0.GetValue());
+		},
+		() => "PI_A_L0_11",
+		() => "done",
+		() => "Sounds L0",
+		() => "GL_A_4",
+		() => "GL_A_8",
+		() => "GL_A_9",
+		() => "GL_A_16",
+		() => "GL_A_18",
+		() => "PI_A_L0_12",
+		() => "UI L0",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("PI_A_L0_12" + v0.GetValue());
+		},
+		() => 4.5
 	];
 }
 
