@@ -5440,6 +5440,11 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		},
 		() => "VB_A_L4_7",
 		() => "UI L4",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_8" + v0.GetValue());
+		},
+		() => "GL_A_8",
 		() => "Full_Story_1",
 		() => "Full_Story_2",
 		() => "Full_Story_3",
