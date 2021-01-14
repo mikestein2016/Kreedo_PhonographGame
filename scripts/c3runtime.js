@@ -3120,7 +3120,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		C3.Behaviors.Fade.Acts.StartFade,
 		C3.Plugins.Sprite.Acts.SetAngle,
 		C3.Plugins.Sprite.Cnds.IsAnimPlaying,
-		C3.Plugins.System.Cnds.EveryTick,
 		C3.Plugins.Arr.Cnds.CompareX,
 		C3.Plugins.System.Acts.CreateObjectByName,
 		C3.Plugins.Sprite.Cnds.OnCreated,
@@ -5014,11 +5013,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 			return () => ("VB_A_L3_4" + v0.GetValue());
 		},
 		() => 790,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			const v1 = p._GetNode(1).GetVar();
-			return () => and((and("PB: ", v0.GetValue()) + " L1Completed: "), v1.GetValue());
-		},
 		() => "Phonograph Data L1",
 		() => "Get Variables from Storage L1",
 		() => "Check Item L1",
