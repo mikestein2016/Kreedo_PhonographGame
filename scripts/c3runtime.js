@@ -4788,7 +4788,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("GL_A_17" + v0.GetValue());
 		},
-		() => "P_L1_ImageSound",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L2_8" + v0.GetValue());
@@ -4986,6 +4985,7 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		() => "P_L3_ImageSoundC",
 		() => "L3_CurrentWord",
 		() => "P_L3_CurrentWord",
+		() => "P_L1_ImageSound",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L3_8" + v0.GetValue());
