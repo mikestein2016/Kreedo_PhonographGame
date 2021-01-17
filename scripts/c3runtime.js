@@ -3061,6 +3061,8 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		C3.Plugins.LocalStorage.Exps.ItemValue,
 		C3.Plugins.Text.Acts.SetText,
 		C3.Plugins.System.Cnds.IsGroupActive,
+		C3.Plugins.System.Cnds.OnLayoutEnd,
+		C3.Plugins.LocalStorage.Acts.SetItem,
 		C3.Plugins.System.Cnds.Every,
 		C3.Plugins.System.Cnds.CompareBoolVar,
 		C3.Plugins.System.Cnds.Compare,
@@ -3081,13 +3083,13 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		C3.Plugins.Touch.Cnds.OnTapGestureObject,
 		C3.Plugins.Sprite.Cnds.IsVisible,
 		C3.Plugins.System.Acts.SubVar,
+		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
 		C3.Plugins.Sprite.Acts.StartAnim,
 		C3.Plugins.Audio.Acts.Play,
 		C3.Behaviors.Fade.Acts.SetFadeInTime,
 		C3.Behaviors.Fade.Acts.SetFadeOutTime,
 		C3.Plugins.System.Cnds.CompareBetween,
 		C3.Plugins.Sprite.Acts.SetAnimFrame,
-		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
 		C3.Plugins.Sprite.Cnds.CompareFrame,
 		C3.Plugins.System.Acts.RestartLayout,
 		C3.Plugins.System.Acts.GoToLayout,
@@ -3095,8 +3097,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		C3.Plugins.Audio.Acts.SetPaused,
 		C3.Plugins.System.Acts.ToggleBoolVar,
 		C3.Plugins.Audio.Acts.SetMuted,
-		C3.Plugins.System.Cnds.OnLayoutEnd,
-		C3.Plugins.LocalStorage.Acts.SetItem,
 		C3.Plugins.Touch.Cnds.OnTapGesture,
 		C3.Plugins.Arr.Acts.SetSize,
 		C3.Plugins.System.Cnds.For,
@@ -3133,6 +3133,8 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		C3.Behaviors.Tween.Cnds.OnTweensFinished,
 		C3.Plugins.Text.Acts.Destroy,
 		C3.Behaviors.Fade.Cnds.OnFadeOutEnd,
+		C3.Plugins.Sprite.Acts.MoveToLayer,
+		C3.Plugins.System.Cnds.EveryTick,
 		C3.Plugins.System.Acts.GoToLayoutByName,
 		C3.Plugins.Sprite.Cnds.CompareY,
 		C3.Plugins.Sprite.Acts.SetMirrored,
@@ -3945,6 +3947,7 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		{L1_End: 0},
 		{L1_HintTapped: 0},
 		{L1_BackTapped: 0},
+		{TurnRed: 0},
 		{L2_TimeSpent: 0},
 		{L2_TutorialCompleted: 0},
 		{L2_TutorialStep: 0},
@@ -4236,6 +4239,66 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 			const v0 = p._GetNode(0).GetVar();
 			return () => v0.GetValue();
 		},
+		() => "Get Variables L0",
+		() => "Get Image Taps L0",
+		() => "P_BushTapped",
+		() => "P_ShirtTapped",
+		() => "P_SharkTapped",
+		() => "P_SheepTapped",
+		() => "P_DishTapped",
+		() => "P_ShopTapped",
+		() => "P_FishTapped",
+		() => "P_ShipTapped",
+		() => "P_ShelfTapped",
+		() => "P_ShellTapped",
+		() => "P_BrushTapped",
+		() => "P_CashTapped",
+		() => "P_ChurchTapped",
+		() => "P_TorchTapped",
+		() => "P_ChairTapped",
+		() => "P_ChilliTapped",
+		() => "P_BranchTapped",
+		() => "P_BenchTapped",
+		() => "P_ConchTapped",
+		() => "P_ChestTapped",
+		() => "P_OstrichTapped",
+		() => "P_ChinTapped",
+		() => "P_ChickTapped",
+		() => "P_ThornTapped",
+		() => "P_BathTapped",
+		() => "P_ThiefTapped",
+		() => "P_ClothTapped",
+		() => "P_TeethTapped",
+		() => "P_ThumbTapped",
+		() => "P_MothTapped",
+		() => "P_SlothTapped",
+		() => "P_PathTapped",
+		() => "P_ThrushTapped",
+		() => "P_WhaleTapped",
+		() => "P_WharfTapped",
+		() => "P_WheelTapped",
+		() => "P_WhistleTapped",
+		() => "P_WhiteTapped",
+		() => "P_WhiskTapped",
+		() => "P_WhipTapped",
+		() => "P_QueenTapped",
+		() => "P_SquareTapped",
+		() => "P_QuillTapped",
+		() => "P_SquidTapped",
+		() => "P_QuiltTapped",
+		() => "P_PhotoTapped",
+		() => "P_PharoahTapped",
+		() => "P_PhoneTapped",
+		() => "P_SphereTapped",
+		() => "P_TrophyTapped",
+		() => "P_TyphoonTapped",
+		() => "P_DolphinTapped",
+		() => "P_ElephantTapped",
+		() => "P_GraphTapped",
+		() => "Set Image Taps End L0",
+		() => "P_Completed",
+		() => "PresentationTimeSpent",
+		() => "P_Attempted",
 		() => "Phonograph Data L0",
 		() => "Time Pause L0",
 		() => 180,
@@ -4360,67 +4423,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		() => -25,
 		() => "",
 		() => "None",
-		() => "Get Variables from Storage L0",
-		() => "Check Item L0",
-		() => "PresentationTimeSpent",
-		() => "P_Attempted",
-		() => "P_Completed",
-		() => "P_BushTapped",
-		() => "P_ShirtTapped",
-		() => "P_SharkTapped",
-		() => "P_SheepTapped",
-		() => "P_DishTapped",
-		() => "P_ShopTapped",
-		() => "P_FishTapped",
-		() => "P_ShipTapped",
-		() => "P_ShelfTapped",
-		() => "P_ShellTapped",
-		() => "P_BrushTapped",
-		() => "P_CashTapped",
-		() => "P_ChurchTapped",
-		() => "P_TorchTapped",
-		() => "P_ChairTapped",
-		() => "P_ChilliTapped",
-		() => "P_BranchTapped",
-		() => "P_BenchTapped",
-		() => "P_ConchTapped",
-		() => "P_ChestTapped",
-		() => "P_OstrichTapped",
-		() => "P_ChinTapped",
-		() => "P_ChickTapped",
-		() => "P_ThornTapped",
-		() => "P_BathTapped",
-		() => "P_ThiefTapped",
-		() => "P_ClothTapped",
-		() => "P_TeethTapped",
-		() => "P_ThumbTapped",
-		() => "P_MothTapped",
-		() => "P_SlothTapped",
-		() => "P_PathTapped",
-		() => "P_ThrushTapped",
-		() => "P_WhaleTapped",
-		() => "P_WharfTapped",
-		() => "P_WheelTapped",
-		() => "P_WhistleTapped",
-		() => "P_WhiteTapped",
-		() => "P_WhiskTapped",
-		() => "P_WhipTapped",
-		() => "P_QueenTapped",
-		() => "P_SquareTapped",
-		() => "P_QuillTapped",
-		() => "P_SquidTapped",
-		() => "P_QuiltTapped",
-		() => "P_PhotoTapped",
-		() => "P_PharoahTapped",
-		() => "P_PhoneTapped",
-		() => "P_SphereTapped",
-		() => "P_TrophyTapped",
-		() => "P_TyphoonTapped",
-		() => "P_DolphinTapped",
-		() => "P_ElephantTapped",
-		() => "P_GraphTapped",
-		() => "Get Image Taps L0",
-		() => "Set Image Taps End L0",
 		() => "SetProgressBarL0",
 		() => "Presentation",
 		() => "Level1",
@@ -4577,446 +4579,13 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L1_1" + v0.GetValue());
-		},
-		() => "VB_A_L1_1",
-		() => "CurrentLevel",
-		() => "Phonograph Data L1 Tutorial",
-		() => "Get Variables from Storage L1 Tutorial",
-		() => "Check Item L1 Tutorial",
+		() => "Get Variables from Storage",
+		() => "Check Item",
 		() => "L1_TimeSpent",
+		() => "L1_BackTapped",
 		() => "L1_Attempted",
 		() => "L1_Completed",
-		() => "L2_Completed",
-		() => "L3_Completed",
-		() => "L4_Completed",
 		() => "L1_TutorialCompleted",
-		() => "L2_TutorialCompleted",
-		() => "L3_TutorialCompleted",
-		() => "L4_TutorialCompleted",
-		() => "SetProgressBarTutorialL1",
-		() => "Time Pause L1 Tutorial",
-		() => "Phonograph Tutorial L1",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L1_2_2" + v0.GetValue());
-		},
-		() => "VB_A_L1_2_2",
-		() => 835,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L1_3" + v0.GetValue());
-		},
-		() => "VB_A_L1_3",
-		() => 237,
-		() => 270,
-		() => 617,
-		() => 410,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L1_4" + v0.GetValue());
-		},
-		() => "VB_A_L1_4",
-		() => 120,
-		() => "Ph_L1_Tutorial_Correct",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L1_5" + v0.GetValue());
-		},
-		() => "VB_A_L1_5",
-		() => 2.5,
-		() => "CorrectSound",
-		() => 500,
-		() => 0.1,
-		() => "Ph_L1_Tutorial_Bench",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L1_6" + v0.GetValue());
-		},
-		() => "VB_A_L1_6",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L1_7" + v0.GetValue());
-		},
-		() => "VB_A_L1_7",
-		() => 325,
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 50);
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 165);
-		},
-		() => "Phonograph UI L1 Tutorial",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_2" + v0.GetValue());
-		},
-		() => "Music L1 Tutorial",
-		() => "Ph_L1_Tutorial_Shark",
-		() => "Ph_L1_Tutorial_Ship",
-		() => "Ph_L1_Tutorial_Thumb",
-		() => "Ph_L1_Tutorial_Chest",
-		() => "Ph_L1_Tutorial_Church",
-		() => "Phonograph Data L2",
-		() => "Get Variables from Storage L2",
-		() => "Check Item L2",
-		() => "L2_TimeSpent",
-		() => "L2_BackTapped",
-		() => "L2_Attempted",
-		() => "L2_HintTapped",
-		() => "P_L2_BushTappedCorrect",
-		() => "P_L2_ShirtTappedCorrect",
-		() => "P_L2_SharkTappedCorrect",
-		() => "P_L2_SheepTappedCorrect",
-		() => "P_L2_DishTappedCorrect",
-		() => "P_L2_ShopTappedCorrect",
-		() => "P_L2_FishTappedCorrect",
-		() => "P_L2_ShipTappedCorrect",
-		() => "P_L2_ShelfTappedCorrect",
-		() => "P_L2_ShellTappedCorrect",
-		() => "P_L2_BrushTappedCorrect",
-		() => "P_L2_CashTappedCorrect",
-		() => "P_L2_ChurchTappedCorrect",
-		() => "P_L2_TorchTappedCorrect",
-		() => "P_L2_ChairTappedCorrect",
-		() => "P_L2_ChilliTappedCorrect",
-		() => "P_L2_BranchTappedCorrect",
-		() => "P_L2_BenchTappedCorrect",
-		() => "P_L2_ConchTappedCorrect",
-		() => "P_L2_ChestTappedCorrect",
-		() => "P_L2_OstrichTappedCorrect",
-		() => "P_L2_ChinTappedCorrect",
-		() => "P_L2_ChickTappedCorrect",
-		() => "P_L2_ThornTappedCorrect",
-		() => "P_L2_BathTappedCorrect",
-		() => "P_L2_ThiefTappedCorrect",
-		() => "P_L2_ClothTappedCorrect",
-		() => "P_L2_TeethTappedCorrect",
-		() => "P_L2_ThumbTappedCorrect",
-		() => "P_L2_MothTappedCorrect",
-		() => "P_L2_SlothTappedCorrect",
-		() => "P_L2_PathTappedCorrect",
-		() => "P_L2_ThrushTappedCorrect",
-		() => "P_L2_WhaleTappedCorrect",
-		() => "P_L2_WharfTappedCorrect",
-		() => "P_L2_WheelTappedCorrect",
-		() => "P_L2_WhistleTappedCorrect",
-		() => "P_L2_WhiteTappedCorrect",
-		() => "P_L2_WhiskTappedCorrect",
-		() => "P_L2_WhipTappedCorrect",
-		() => "P_L2_QueenTappedCorrect",
-		() => "P_L2_SquareTappedCorrect",
-		() => "P_L2_QuillTappedCorrect",
-		() => "P_L2_SquidTappedCorrect",
-		() => "P_L2_QuiltTappedCorrect",
-		() => "P_L2_PhotoTappedCorrect",
-		() => "P_L2_PharoahTappedCorrect",
-		() => "P_L2_PhoneTappedCorrect",
-		() => "P_L2_SphereTappedCorrect",
-		() => "P_L2_TrophyTappedCorrect",
-		() => "P_L2_TyphoonTappedCorrect",
-		() => "P_L2_DolphinTappedCorrect",
-		() => "P_L2_ElephantTappedCorrect",
-		() => "P_L2_GraphTappedCorrect",
-		() => "P_L2_BushTappedIncorrect",
-		() => "P_L2_ShirtTappedIncorrect",
-		() => "P_L2_SharkTappedIncorrect",
-		() => "P_L2_SheepTappedIncorrect",
-		() => "P_L2_DishTappedIncorrect",
-		() => "P_L2_ShopTappedIncorrect",
-		() => "P_L2_FishTappedIncorrect",
-		() => "P_L2_ShipTappedIncorrect",
-		() => "P_L2_ShelfTappedIncorrect",
-		() => "P_L2_ShellTappedIncorrect",
-		() => "P_L2_BrushTappedIncorrect",
-		() => "P_L2_CashTappedIncorrect",
-		() => "P_L2_ChurchTappedIncorrect",
-		() => "P_L2_TorchTappedIncorrect",
-		() => "P_L2_ChairTappedIncorrect",
-		() => "P_L2_ChilliTappedIncorrect",
-		() => "P_L2_BranchTappedIncorrect",
-		() => "P_L2_BenchTappedIncorrect",
-		() => "P_L2_ConchTappedIncorrect",
-		() => "P_L2_ChestTappedIncorrect",
-		() => "P_L2_OstrichTappedIncorrect",
-		() => "P_L2_ChinTappedIncorrect",
-		() => "P_L2_ChickTappedIncorrect",
-		() => "P_L2_ThornTappedIncorrect",
-		() => "P_L2_BathTappedIncorrect",
-		() => "P_L2_ThiefTappedIncorrect",
-		() => "P_L2_ClothTappedIncorrect",
-		() => "P_L2_TeethTappedIncorrect",
-		() => "P_L2_ThumbTappedIncorrect",
-		() => "P_L2_MothTappedIncorrect",
-		() => "P_L2_SlothTappedIncorrect",
-		() => "P_L2_PathTappedIncorrect",
-		() => "P_L2_ThrushTappedIncorrect",
-		() => "P_L2_WhaleTappedIncorrect",
-		() => "P_L2_WharfTappedIncorrect",
-		() => "P_L2_WheelTappedIncorrect",
-		() => "P_L2_WhistleTappedIncorrect",
-		() => "P_L2_WhiteTappedIncorrect",
-		() => "P_L2_WhiskTappedIncorrect",
-		() => "P_L2_WhipTappedIncorrect",
-		() => "P_L2_QueenTappedIncorrect",
-		() => "P_L2_SquareTappedIncorrect",
-		() => "P_L2_QuillTappedIncorrect",
-		() => "P_L2_SquidTappedIncorrect",
-		() => "P_L2_QuiltTappedIncorrect",
-		() => "P_L2_PhotoTappedIncorrect",
-		() => "P_L2_PharoahTappedIncorrect",
-		() => "P_L2_PhoneTappedIncorrect",
-		() => "P_L2_SphereTappedIncorrect",
-		() => "P_L2_TrophyTappedIncorrect",
-		() => "P_L2_TyphoonTappedIncorrect",
-		() => "P_L2_DolphinTappedIncorrect",
-		() => "P_L2_ElephantTappedIncorrect",
-		() => "P_L2_GraphTappedIncorrect",
-		() => "Get Image Taps L2",
-		() => "Set Image Taps End L2",
-		() => "Time Pause L2",
-		() => "UI L2",
-		() => "GL_A_5",
-		() => "VB_A_L2_8",
-		() => "P_L2_ImageSound",
-		() => "IncorrectSound",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_17" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_8" + v0.GetValue());
-		},
-		() => "Music L2",
-		() => "Set Board L2",
-		() => 740,
-		() => 220,
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("shell_i", "brush_i", "cash_i", "church_i", "torch_i", "chair_i", "chilli_i", "branch_i", "bench_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("conch_i", "chest_i", "ostrich_i", "chin_i", "chick_i", "thorn_i", "bath_i", "thief_i", "cloth_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("teeth_i", "thumb_i", "moth_i", "sloth_i", "path_i", "thrush_i", "whale_i", "wharf_i", "wheel_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("whistle_i", "white_i", "whisk_i", "whip_i", "queen_i", "square_i", "quill_i", "squid_i", "quilt_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("photo_i", "pharoah_i", "phone_i", "sphere_i", "trophy_i", "typhoon_i", "dolphin_i", "elephant_i", "graph_i");
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0(1, 2, 3, 4, 6);
-		},
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0("bush_i", "shirt_i", "shark_i", "sheep_i", "dish_i", "shop_i", "fish_i", "ship_i", "shelf_i");
-		},
-		() => "Randomizer L2",
-		() => 140,
-		() => 400,
-		() => 425,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => (v0.GetValue() + "_i");
-		},
-		() => "Word Checker L2",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => (v0.GetValue() + "TA");
-		},
-		() => "Destroyer L2",
-		() => 1000,
-		() => 800,
-		() => "SetProgressBarL2",
-		() => "Progress Bar L2",
-		() => 240,
-		() => "pop",
-		() => 238,
-		() => 1.5,
-		() => "opacity",
-		() => 100,
-		() => 0.3,
-		() => "disappear",
-		() => "scale",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("GL_A_5" + v0.GetValue());
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() + 15);
-		},
-		() => "Get Variables from Storage L3",
-		() => "Check Item L3",
-		() => "L3_Attempted",
-		() => "L3_BackTapped",
-		() => "L3_TimeSpent",
-		() => "L3_HintTapped",
-		() => "P_L3_BushTappedCorrect",
-		() => "P_L3_ShirtTappedCorrect",
-		() => "P_L3_SharkTappedCorrect",
-		() => "P_L3_SheepTappedCorrect",
-		() => "P_L3_DishTappedCorrect",
-		() => "P_L3_ShopTappedCorrect",
-		() => "P_L3_FishTappedCorrect",
-		() => "P_L3_ShipTappedCorrect",
-		() => "P_L3_ShelfTappedCorrect",
-		() => "P_L3_ShellTappedCorrect",
-		() => "P_L3_BrushTappedCorrect",
-		() => "P_L3_CashTappedCorrect",
-		() => "P_L3_ChurchTappedCorrect",
-		() => "P_L3_TorchTappedCorrect",
-		() => "P_L3_ChairTappedCorrect",
-		() => "P_L3_ChilliTappedCorrect",
-		() => "P_L3_BranchTappedCorrect",
-		() => "P_L3_BenchTappedCorrect",
-		() => "P_L3_ConchTappedCorrect",
-		() => "P_L3_ChestTappedCorrect",
-		() => "P_L3_OstrichTappedCorrect",
-		() => "P_L3_ChinTappedCorrect",
-		() => "P_L3_ChickTappedCorrect",
-		() => "P_L3_ThornTappedCorrect",
-		() => "P_L3_BathTappedCorrect",
-		() => "P_L3_ThiefTappedCorrect",
-		() => "P_L3_ClothTappedCorrect",
-		() => "P_L3_TeethTappedCorrect",
-		() => "P_L3_ThumbTappedCorrect",
-		() => "P_L3_MothTappedCorrect",
-		() => "P_L3_SlothTappedCorrect",
-		() => "P_L3_PathTappedCorrect",
-		() => "P_L3_ThrushTappedCorrect",
-		() => "P_L3_WhaleTappedCorrect",
-		() => "P_L3_WharfTappedCorrect",
-		() => "P_L3_WheelTappedCorrect",
-		() => "P_L3_WhistleTappedCorrect",
-		() => "P_L3_WhiteTappedCorrect",
-		() => "P_L3_WhiskTappedCorrect",
-		() => "P_L3_WhipTappedCorrect",
-		() => "P_L3_QueenTappedCorrect",
-		() => "P_L3_SquareTappedCorrect",
-		() => "P_L3_QuillTappedCorrect",
-		() => "P_L3_SquidTappedCorrect",
-		() => "P_L3_QuiltTappedCorrect",
-		() => "P_L3_PhotoTappedCorrect",
-		() => "P_L3_PharoahTappedCorrect",
-		() => "P_L3_PhoneTappedCorrect",
-		() => "P_L3_SphereTappedCorrect",
-		() => "P_L3_TrophyTappedCorrect",
-		() => "P_L3_TyphoonTappedCorrect",
-		() => "P_L3_DolphinTappedCorrect",
-		() => "P_L3_ElephantTappedCorrect",
-		() => "P_L3_GraphTappedCorrect",
-		() => "P_L3_BushTappedIncorrect",
-		() => "P_L3_ShirtTappedIncorrect",
-		() => "P_L3_SharkTappedIncorrect",
-		() => "P_L3_SheepTappedIncorrect",
-		() => "P_L3_DishTappedIncorrect",
-		() => "P_L3_ShopTappedIncorrect",
-		() => "P_L3_FishTappedIncorrect",
-		() => "P_L3_ShipTappedIncorrect",
-		() => "P_L3_ShelfTappedIncorrect",
-		() => "P_L3_ShellTappedIncorrect",
-		() => "P_L3_BrushTappedIncorrect",
-		() => "P_L3_CashTappedIncorrect",
-		() => "P_L3_ChurchTappedIncorrect",
-		() => "P_L3_TorchTappedIncorrect",
-		() => "P_L3_ChairTappedIncorrect",
-		() => "P_L3_ChilliTappedIncorrect",
-		() => "P_L3_BranchTappedIncorrect",
-		() => "P_L3_BenchTappedIncorrect",
-		() => "P_L3_ConchTappedIncorrect",
-		() => "P_L3_ChestTappedIncorrect",
-		() => "P_L3_OstrichTappedIncorrect",
-		() => "P_L3_ChinTappedIncorrect",
-		() => "P_L3_ChickTappedIncorrect",
-		() => "P_L3_ThornTappedIncorrect",
-		() => "P_L3_BathTappedIncorrect",
-		() => "P_L3_ThiefTappedIncorrect",
-		() => "P_L3_ClothTappedIncorrect",
-		() => "P_L3_TeethTappedIncorrect",
-		() => "P_L3_ThumbTappedIncorrect",
-		() => "P_L3_MothTappedIncorrect",
-		() => "P_L3_SlothTappedIncorrect",
-		() => "P_L3_PathTappedIncorrect",
-		() => "P_L3_ThrushTappedIncorrect",
-		() => "P_L3_WhaleTappedIncorrect",
-		() => "P_L3_WharfTappedIncorrect",
-		() => "P_L3_WheelTappedIncorrect",
-		() => "P_L3_WhistleTappedIncorrect",
-		() => "P_L3_WhiteTappedIncorrect",
-		() => "P_L3_WhiskTappedIncorrect",
-		() => "P_L3_WhipTappedIncorrect",
-		() => "P_L3_QueenTappedIncorrect",
-		() => "P_L3_SquareTappedIncorrect",
-		() => "P_L3_QuillTappedIncorrect",
-		() => "P_L3_SquidTappedIncorrect",
-		() => "P_L3_QuiltTappedIncorrect",
-		() => "P_L3_PhotoTappedIncorrect",
-		() => "P_L3_PharoahTappedIncorrect",
-		() => "P_L3_PhoneTappedIncorrect",
-		() => "P_L3_SphereTappedIncorrect",
-		() => "P_L3_TrophyTappedIncorrect",
-		() => "P_L3_TyphoonTappedIncorrect",
-		() => "P_L3_DolphinTappedIncorrect",
-		() => "P_L3_ElephantTappedIncorrect",
-		() => "P_L3_GraphTappedIncorrect",
-		() => "Get Image Taps L3",
-		() => "Set Image Taps End L3",
-		() => "Phonograph Data L3",
-		() => "Time Pause L3",
-		() => "UI L3",
-		() => "VB_A_L3_8",
-		() => "P_L3_ImageSound",
-		() => "VB_A_L3_4",
-		() => "P_L3_Correct",
-		() => "P_L3_ImageSoundC",
-		() => "L3_CurrentWord",
-		() => "P_L3_CurrentWord",
-		() => "P_L1_ImageSound",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L3_8" + v0.GetValue());
-		},
-		() => "Music L3",
-		() => "SetProgressBarL3",
-		() => "Progress Bar L3",
-		() => "Words Set L3",
-		() => "Current Word",
-		() => 190,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => (v0.GetValue() + "_l");
-		},
-		() => 310,
-		() => "Shuffle Options L3",
-		() => 480,
-		() => 670,
-		() => "Word Checker L3",
-		() => "Destroyer L3",
-		() => "Flip Cards L3",
-		() => 1.25,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L3_4" + v0.GetValue());
-		},
-		() => 790,
-		() => "Phonograph Data L1",
-		() => "Get Variables from Storage L1",
-		() => "Check Item L1",
-		() => "L1_BackTapped",
 		() => "L1_HintTapped",
 		() => "P_L1_BushTappedCorrect",
 		() => "P_L1_ShirtTappedCorrect",
@@ -5126,138 +4695,236 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		() => "P_L1_DolphinTappedIncorrect",
 		() => "P_L1_ElephantTappedIncorrect",
 		() => "P_L1_GraphTappedIncorrect",
-		() => "Get Image Taps L1",
-		() => "Set Image Taps End L1",
-		() => "Get Item & Set",
-		() => "Time Pause L1",
-		() => "UI L1",
-		() => "VB_A_L1_8",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L1_8" + v0.GetValue());
-		},
-		() => "Music L1",
-		() => "Set Board L1",
-		() => "Randomizer L1",
-		() => "Word Checker L1",
-		() => "Destroyer L1",
-		() => "SetProgressBarL1",
-		() => "Progress Bar L1",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_1" + v0.GetValue());
-		},
-		() => "VB_A_L2_1",
-		() => "Phonograph Data L2 Tutorial",
-		() => "Get Variables from Storage L2 Tutorial",
-		() => "Check Item L2 Tutorial",
-		() => "SetProgressBarTutorialL2",
-		() => "Time Pause L2 Tutorial",
-		() => "Phonograph UI L2 Tutorial",
-		() => "Music L2 Tutorial",
-		() => "VB_A_L2_2",
-		() => "VB_A_L2_3",
-		() => "VB_A_L2_4",
-		() => "VB_A_L2_5",
-		() => "VB_A_L2_6",
-		() => "VB_A_L2_7",
-		() => "Phonograph Tutorial L2",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_2" + v0.GetValue());
-		},
-		() => 795,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_3" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_4" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_5" + v0.GetValue());
-		},
-		() => "Bench Correct",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_6" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L2_7" + v0.GetValue());
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 135);
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 80);
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L3_1" + v0.GetValue());
-		},
-		() => "VB_A_L3_1",
-		() => "Phonograph Data L3 Tutorial",
-		() => "Get Variables from Storage L3 Tutorial",
-		() => "Check Item L3 Tutorial",
-		() => "SetProgressBarTutorialL3",
-		() => "Time Pause L3 Tutorial",
-		() => "Phonograph UI L3 Tutorial",
-		() => "Music L3 Tutorial",
-		() => "VB_A_L3_2",
-		() => "VB_A_L3_3",
-		() => "VB_A_L3_5",
-		() => "VB_A_L3_6",
-		() => "VB_A_L3_7",
-		() => "Cloth2",
-		() => "Cloth3",
-		() => "Phonograph Tutorial L3",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L3_2" + v0.GetValue());
-		},
-		() => "Explain Mirrored",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L3_3" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L3_5" + v0.GetValue());
-		},
-		() => -240,
-		() => "Correct",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L3_6" + v0.GetValue());
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L3_7" + v0.GetValue());
-		},
-		p => {
-			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() + 45);
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			const v1 = p._GetNode(1).GetVar();
-			return () => (and((and("S", v0.GetValue()) + "_L"), v1.GetValue()) + "_Beep");
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => ("VB_A_L4_6" + v0.GetValue());
-		},
-		() => "VB_A_L4_6",
-		() => "VB_A_L4_8",
-		() => "P_L4_ImageSound",
-		() => "Time Pause L4",
-		() => "Get Variables from Storage L4",
-		() => "Check Item L4",
+		() => "L2_TimeSpent",
+		() => "L2_BackTapped",
+		() => "L2_Attempted",
+		() => "L2_Completed",
+		() => "L2_TutorialCompleted",
+		() => "L2_HintTapped",
+		() => "P_L2_BushTappedCorrect",
+		() => "P_L2_ShirtTappedCorrect",
+		() => "P_L2_SharkTappedCorrect",
+		() => "P_L2_SheepTappedCorrect",
+		() => "P_L2_DishTappedCorrect",
+		() => "P_L2_ShopTappedCorrect",
+		() => "P_L2_FishTappedCorrect",
+		() => "P_L2_ShipTappedCorrect",
+		() => "P_L2_ShelfTappedCorrect",
+		() => "P_L2_ShellTappedCorrect",
+		() => "P_L2_BrushTappedCorrect",
+		() => "P_L2_CashTappedCorrect",
+		() => "P_L2_ChurchTappedCorrect",
+		() => "P_L2_TorchTappedCorrect",
+		() => "P_L2_ChairTappedCorrect",
+		() => "P_L2_ChilliTappedCorrect",
+		() => "P_L2_BranchTappedCorrect",
+		() => "P_L2_BenchTappedCorrect",
+		() => "P_L2_ConchTappedCorrect",
+		() => "P_L2_ChestTappedCorrect",
+		() => "P_L2_OstrichTappedCorrect",
+		() => "P_L2_ChinTappedCorrect",
+		() => "P_L2_ChickTappedCorrect",
+		() => "P_L2_ThornTappedCorrect",
+		() => "P_L2_BathTappedCorrect",
+		() => "P_L2_ThiefTappedCorrect",
+		() => "P_L2_ClothTappedCorrect",
+		() => "P_L2_TeethTappedCorrect",
+		() => "P_L2_ThumbTappedCorrect",
+		() => "P_L2_MothTappedCorrect",
+		() => "P_L2_SlothTappedCorrect",
+		() => "P_L2_PathTappedCorrect",
+		() => "P_L2_ThrushTappedCorrect",
+		() => "P_L2_WhaleTappedCorrect",
+		() => "P_L2_WharfTappedCorrect",
+		() => "P_L2_WheelTappedCorrect",
+		() => "P_L2_WhistleTappedCorrect",
+		() => "P_L2_WhiteTappedCorrect",
+		() => "P_L2_WhiskTappedCorrect",
+		() => "P_L2_WhipTappedCorrect",
+		() => "P_L2_QueenTappedCorrect",
+		() => "P_L2_SquareTappedCorrect",
+		() => "P_L2_QuillTappedCorrect",
+		() => "P_L2_SquidTappedCorrect",
+		() => "P_L2_QuiltTappedCorrect",
+		() => "P_L2_PhotoTappedCorrect",
+		() => "P_L2_PharoahTappedCorrect",
+		() => "P_L2_PhoneTappedCorrect",
+		() => "P_L2_SphereTappedCorrect",
+		() => "P_L2_TrophyTappedCorrect",
+		() => "P_L2_TyphoonTappedCorrect",
+		() => "P_L2_DolphinTappedCorrect",
+		() => "P_L2_ElephantTappedCorrect",
+		() => "P_L2_GraphTappedCorrect",
+		() => "P_L2_BushTappedIncorrect",
+		() => "P_L2_ShirtTappedIncorrect",
+		() => "P_L2_SharkTappedIncorrect",
+		() => "P_L2_SheepTappedIncorrect",
+		() => "P_L2_DishTappedIncorrect",
+		() => "P_L2_ShopTappedIncorrect",
+		() => "P_L2_FishTappedIncorrect",
+		() => "P_L2_ShipTappedIncorrect",
+		() => "P_L2_ShelfTappedIncorrect",
+		() => "P_L2_ShellTappedIncorrect",
+		() => "P_L2_BrushTappedIncorrect",
+		() => "P_L2_CashTappedIncorrect",
+		() => "P_L2_ChurchTappedIncorrect",
+		() => "P_L2_TorchTappedIncorrect",
+		() => "P_L2_ChairTappedIncorrect",
+		() => "P_L2_ChilliTappedIncorrect",
+		() => "P_L2_BranchTappedIncorrect",
+		() => "P_L2_BenchTappedIncorrect",
+		() => "P_L2_ConchTappedIncorrect",
+		() => "P_L2_ChestTappedIncorrect",
+		() => "P_L2_OstrichTappedIncorrect",
+		() => "P_L2_ChinTappedIncorrect",
+		() => "P_L2_ChickTappedIncorrect",
+		() => "P_L2_ThornTappedIncorrect",
+		() => "P_L2_BathTappedIncorrect",
+		() => "P_L2_ThiefTappedIncorrect",
+		() => "P_L2_ClothTappedIncorrect",
+		() => "P_L2_TeethTappedIncorrect",
+		() => "P_L2_ThumbTappedIncorrect",
+		() => "P_L2_MothTappedIncorrect",
+		() => "P_L2_SlothTappedIncorrect",
+		() => "P_L2_PathTappedIncorrect",
+		() => "P_L2_ThrushTappedIncorrect",
+		() => "P_L2_WhaleTappedIncorrect",
+		() => "P_L2_WharfTappedIncorrect",
+		() => "P_L2_WheelTappedIncorrect",
+		() => "P_L2_WhistleTappedIncorrect",
+		() => "P_L2_WhiteTappedIncorrect",
+		() => "P_L2_WhiskTappedIncorrect",
+		() => "P_L2_WhipTappedIncorrect",
+		() => "P_L2_QueenTappedIncorrect",
+		() => "P_L2_SquareTappedIncorrect",
+		() => "P_L2_QuillTappedIncorrect",
+		() => "P_L2_SquidTappedIncorrect",
+		() => "P_L2_QuiltTappedIncorrect",
+		() => "P_L2_PhotoTappedIncorrect",
+		() => "P_L2_PharoahTappedIncorrect",
+		() => "P_L2_PhoneTappedIncorrect",
+		() => "P_L2_SphereTappedIncorrect",
+		() => "P_L2_TrophyTappedIncorrect",
+		() => "P_L2_TyphoonTappedIncorrect",
+		() => "P_L2_DolphinTappedIncorrect",
+		() => "P_L2_ElephantTappedIncorrect",
+		() => "P_L2_GraphTappedIncorrect",
+		() => "L3_Attempted",
+		() => "L3_BackTapped",
+		() => "L3_TimeSpent",
+		() => "L3_Completed",
+		() => "L3_TutorialCompleted",
+		() => "L3_HintTapped",
+		() => "P_L3_BushTappedCorrect",
+		() => "P_L3_ShirtTappedCorrect",
+		() => "P_L3_SharkTappedCorrect",
+		() => "P_L3_SheepTappedCorrect",
+		() => "P_L3_DishTappedCorrect",
+		() => "P_L3_ShopTappedCorrect",
+		() => "P_L3_FishTappedCorrect",
+		() => "P_L3_ShipTappedCorrect",
+		() => "P_L3_ShelfTappedCorrect",
+		() => "P_L3_ShellTappedCorrect",
+		() => "P_L3_BrushTappedCorrect",
+		() => "P_L3_CashTappedCorrect",
+		() => "P_L3_ChurchTappedCorrect",
+		() => "P_L3_TorchTappedCorrect",
+		() => "P_L3_ChairTappedCorrect",
+		() => "P_L3_ChilliTappedCorrect",
+		() => "P_L3_BranchTappedCorrect",
+		() => "P_L3_BenchTappedCorrect",
+		() => "P_L3_ConchTappedCorrect",
+		() => "P_L3_ChestTappedCorrect",
+		() => "P_L3_OstrichTappedCorrect",
+		() => "P_L3_ChinTappedCorrect",
+		() => "P_L3_ChickTappedCorrect",
+		() => "P_L3_ThornTappedCorrect",
+		() => "P_L3_BathTappedCorrect",
+		() => "P_L3_ThiefTappedCorrect",
+		() => "P_L3_ClothTappedCorrect",
+		() => "P_L3_TeethTappedCorrect",
+		() => "P_L3_ThumbTappedCorrect",
+		() => "P_L3_MothTappedCorrect",
+		() => "P_L3_SlothTappedCorrect",
+		() => "P_L3_PathTappedCorrect",
+		() => "P_L3_ThrushTappedCorrect",
+		() => "P_L3_WhaleTappedCorrect",
+		() => "P_L3_WharfTappedCorrect",
+		() => "P_L3_WheelTappedCorrect",
+		() => "P_L3_WhistleTappedCorrect",
+		() => "P_L3_WhiteTappedCorrect",
+		() => "P_L3_WhiskTappedCorrect",
+		() => "P_L3_WhipTappedCorrect",
+		() => "P_L3_QueenTappedCorrect",
+		() => "P_L3_SquareTappedCorrect",
+		() => "P_L3_QuillTappedCorrect",
+		() => "P_L3_SquidTappedCorrect",
+		() => "P_L3_QuiltTappedCorrect",
+		() => "P_L3_PhotoTappedCorrect",
+		() => "P_L3_PharoahTappedCorrect",
+		() => "P_L3_PhoneTappedCorrect",
+		() => "P_L3_SphereTappedCorrect",
+		() => "P_L3_TrophyTappedCorrect",
+		() => "P_L3_TyphoonTappedCorrect",
+		() => "P_L3_DolphinTappedCorrect",
+		() => "P_L3_ElephantTappedCorrect",
+		() => "P_L3_GraphTappedCorrect",
+		() => "P_L3_BushTappedIncorrect",
+		() => "P_L3_ShirtTappedIncorrect",
+		() => "P_L3_SharkTappedIncorrect",
+		() => "P_L3_SheepTappedIncorrect",
+		() => "P_L3_DishTappedIncorrect",
+		() => "P_L3_ShopTappedIncorrect",
+		() => "P_L3_FishTappedIncorrect",
+		() => "P_L3_ShipTappedIncorrect",
+		() => "P_L3_ShelfTappedIncorrect",
+		() => "P_L3_ShellTappedIncorrect",
+		() => "P_L3_BrushTappedIncorrect",
+		() => "P_L3_CashTappedIncorrect",
+		() => "P_L3_ChurchTappedIncorrect",
+		() => "P_L3_TorchTappedIncorrect",
+		() => "P_L3_ChairTappedIncorrect",
+		() => "P_L3_ChilliTappedIncorrect",
+		() => "P_L3_BranchTappedIncorrect",
+		() => "P_L3_BenchTappedIncorrect",
+		() => "P_L3_ConchTappedIncorrect",
+		() => "P_L3_ChestTappedIncorrect",
+		() => "P_L3_OstrichTappedIncorrect",
+		() => "P_L3_ChinTappedIncorrect",
+		() => "P_L3_ChickTappedIncorrect",
+		() => "P_L3_ThornTappedIncorrect",
+		() => "P_L3_BathTappedIncorrect",
+		() => "P_L3_ThiefTappedIncorrect",
+		() => "P_L3_ClothTappedIncorrect",
+		() => "P_L3_TeethTappedIncorrect",
+		() => "P_L3_ThumbTappedIncorrect",
+		() => "P_L3_MothTappedIncorrect",
+		() => "P_L3_SlothTappedIncorrect",
+		() => "P_L3_PathTappedIncorrect",
+		() => "P_L3_ThrushTappedIncorrect",
+		() => "P_L3_WhaleTappedIncorrect",
+		() => "P_L3_WharfTappedIncorrect",
+		() => "P_L3_WheelTappedIncorrect",
+		() => "P_L3_WhistleTappedIncorrect",
+		() => "P_L3_WhiteTappedIncorrect",
+		() => "P_L3_WhiskTappedIncorrect",
+		() => "P_L3_WhipTappedIncorrect",
+		() => "P_L3_QueenTappedIncorrect",
+		() => "P_L3_SquareTappedIncorrect",
+		() => "P_L3_QuillTappedIncorrect",
+		() => "P_L3_SquidTappedIncorrect",
+		() => "P_L3_QuiltTappedIncorrect",
+		() => "P_L3_PhotoTappedIncorrect",
+		() => "P_L3_PharoahTappedIncorrect",
+		() => "P_L3_PhoneTappedIncorrect",
+		() => "P_L3_SphereTappedIncorrect",
+		() => "P_L3_TrophyTappedIncorrect",
+		() => "P_L3_TyphoonTappedIncorrect",
+		() => "P_L3_DolphinTappedIncorrect",
+		() => "P_L3_ElephantTappedIncorrect",
+		() => "P_L3_GraphTappedIncorrect",
+		() => "L4_Completed",
+		() => "L4_TutorialCompleted",
 		() => "L4_TimeSpent",
 		() => "L4_BackTapped",
 		() => "L4_Attempted",
@@ -5409,9 +5076,342 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		() => "P_L4_DolphinTappedIncorrect",
 		() => "P_L4_ElephantTappedIncorrect",
 		() => "P_L4_GraphTappedIncorrect",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_1" + v0.GetValue());
+		},
+		() => "VB_A_L1_1",
+		() => "CurrentLevel",
+		() => "Phonograph Data L1 Tutorial",
+		() => "SetProgressBarTutorialL1",
+		() => "Time Pause L1 Tutorial",
+		() => "Phonograph Tutorial L1",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_2_2" + v0.GetValue());
+		},
+		() => "VB_A_L1_2_2",
+		() => 835,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_3" + v0.GetValue());
+		},
+		() => "VB_A_L1_3",
+		() => 237,
+		() => 270,
+		() => 617,
+		() => 410,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_4" + v0.GetValue());
+		},
+		() => "VB_A_L1_4",
+		() => 120,
+		() => "Ph_L1_Tutorial_Correct",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_5" + v0.GetValue());
+		},
+		() => "VB_A_L1_5",
+		() => 2.5,
+		() => "CorrectSound",
+		() => 500,
+		() => 0.1,
+		() => "Ph_L1_Tutorial_Bench",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_6" + v0.GetValue());
+		},
+		() => "VB_A_L1_6",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_7" + v0.GetValue());
+		},
+		() => "VB_A_L1_7",
+		() => 325,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 50);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 165);
+		},
+		() => "Phonograph UI L1 Tutorial",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_2" + v0.GetValue());
+		},
+		() => "Music L1 Tutorial",
+		() => "Ph_L1_Tutorial_Shark",
+		() => "Ph_L1_Tutorial_Ship",
+		() => "Ph_L1_Tutorial_Thumb",
+		() => "Ph_L1_Tutorial_Chest",
+		() => "Ph_L1_Tutorial_Church",
+		() => "Get Variables L2",
+		() => "Get Image Taps L2",
+		() => "Set Image Taps End L2",
+		() => "Phonograph Data L2",
+		() => "Time Pause L2",
+		() => "UI L2",
+		() => "GL_A_5",
+		() => "VB_A_L2_8",
+		() => "P_L2_ImageSound",
+		() => "IncorrectSound",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_17" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_8" + v0.GetValue());
+		},
+		() => "Music L2",
+		() => "Set Board L2",
+		() => 740,
+		() => 220,
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("shell_i", "brush_i", "cash_i", "church_i", "torch_i", "chair_i", "chilli_i", "branch_i", "bench_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("conch_i", "chest_i", "ostrich_i", "chin_i", "chick_i", "thorn_i", "bath_i", "thief_i", "cloth_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("teeth_i", "thumb_i", "moth_i", "sloth_i", "path_i", "thrush_i", "whale_i", "wharf_i", "wheel_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("whistle_i", "white_i", "whisk_i", "whip_i", "queen_i", "square_i", "quill_i", "squid_i", "quilt_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("photo_i", "pharoah_i", "phone_i", "sphere_i", "trophy_i", "typhoon_i", "dolphin_i", "elephant_i", "graph_i");
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0(1, 2, 3, 4, 6);
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("bush_i", "shirt_i", "shark_i", "sheep_i", "dish_i", "shop_i", "fish_i", "ship_i", "shelf_i");
+		},
+		() => "Randomizer L2",
+		() => 140,
+		() => 400,
+		() => 425,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => (v0.GetValue() + "_i");
+		},
+		() => "Word Checker L2",
+		() => 1.5,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => (v0.GetValue() + "TA");
+		},
+		() => "Destroyer L2",
+		() => 1000,
+		() => 800,
+		() => "SetProgressBarL2",
+		() => "Progress Bar L2",
+		() => 240,
+		() => "pop",
+		() => 238,
+		() => "opacity",
+		() => 100,
+		() => 0.3,
+		() => "disappear",
+		() => "scale",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("GL_A_5" + v0.GetValue());
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 15);
+		},
+		() => "Get Variables L3",
+		() => "Get Image Taps L3",
+		() => "Set Image Taps End L3",
+		() => "Phonograph Data L3",
+		() => "Time Pause L3",
+		() => "UI L3",
+		() => "VB_A_L3_8",
+		() => "P_L3_ImageSound",
+		() => "VB_A_L3_4",
+		() => "P_L3_Correct",
+		() => "P_L3_ImageSoundC",
+		() => "L3_CurrentWord",
+		() => "P_L3_CurrentWord",
+		() => "P_L1_ImageSound",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L3_8" + v0.GetValue());
+		},
+		() => "Music L3",
+		() => "SetProgressBarL3",
+		() => "Progress Bar L3",
+		() => "Words Set L3",
+		() => "Current Word",
+		() => 190,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => (v0.GetValue() + "_l");
+		},
+		() => 310,
+		() => "Shuffle Options L3",
+		() => 480,
+		() => 670,
+		() => "Word Checker L3",
+		() => "Incorrect",
+		() => 0.75,
+		() => "Destroyer L3",
+		() => "Flip Cards L3",
+		() => 1.25,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L3_4" + v0.GetValue());
+		},
+		() => 790,
+		() => "Get Variables L1",
+		() => "Get Image Taps L1",
+		() => "Set Image Taps End L1",
+		() => "Phonograph Data L1",
+		() => "Time Pause L1",
+		() => "UI L1",
+		() => "VB_A_L1_8",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_8" + v0.GetValue());
+		},
+		() => "Music L1",
+		() => "Set Board L1",
+		() => "Randomizer L1",
+		() => "Word Checker L1",
+		() => "TryAgain",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L1_9" + v0.GetValue());
+		},
+		() => "Destroyer L1",
+		() => "SetProgressBarL1",
+		() => "Progress Bar L1",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_1" + v0.GetValue());
+		},
+		() => "VB_A_L2_1",
+		() => "Phonograph Data L2 Tutorial",
+		() => "SetProgressBarTutorialL2",
+		() => "Time Pause L2 Tutorial",
+		() => "Phonograph UI L2 Tutorial",
+		() => "Music L2 Tutorial",
+		() => "VB_A_L2_2",
+		() => "VB_A_L2_3",
+		() => "VB_A_L2_4",
+		() => "VB_A_L2_5",
+		() => "VB_A_L2_6",
+		() => "VB_A_L2_7",
+		() => "Phonograph Tutorial L2",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_2" + v0.GetValue());
+		},
+		() => 795,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_3" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_4" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_5" + v0.GetValue());
+		},
+		() => "Bench Correct",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_6" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L2_7" + v0.GetValue());
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 135);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 80);
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L3_1" + v0.GetValue());
+		},
+		() => "VB_A_L3_1",
+		() => "Phonograph Data L3 Tutorial",
+		() => "SetProgressBarTutorialL3",
+		() => "Time Pause L3 Tutorial",
+		() => "Phonograph UI L3 Tutorial",
+		() => "Music L3 Tutorial",
+		() => "VB_A_L3_2",
+		() => "VB_A_L3_3",
+		() => "VB_A_L3_5",
+		() => "VB_A_L3_6",
+		() => "VB_A_L3_7",
+		() => "Cloth2",
+		() => "Cloth3",
+		() => "Phonograph Tutorial L3",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L3_2" + v0.GetValue());
+		},
+		() => "Explain Mirrored",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L3_3" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L3_5" + v0.GetValue());
+		},
+		() => -240,
+		() => "Correct",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L3_6" + v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L3_7" + v0.GetValue());
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 45);
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			const v1 = p._GetNode(1).GetVar();
+			return () => (and((and("S", v0.GetValue()) + "_L"), v1.GetValue()) + "_Beep");
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => ("VB_A_L4_6" + v0.GetValue());
+		},
+		() => "VB_A_L4_6",
+		() => "VB_A_L4_8",
+		() => "P_L4_ImageSound",
+		() => "Get Variables L4",
 		() => "Get Image Taps L4",
 		() => "Set Image Taps End L4",
 		() => "Get Item & Set L4",
+		() => "Time Pause L4",
 		() => "Phonograph Data L4",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -5646,7 +5646,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		() => 462,
 		() => "Chest_L4_S1_A",
 		() => "Complete S6",
-		() => 405,
 		() => "L4_End",
 		() => "Default",
 		() => "40",
@@ -5661,8 +5660,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		},
 		() => "VB_A_L4_1",
 		() => "Phonograph Data L4 Tutorial",
-		() => "Get Variables from Storage L4 Tutorial",
-		() => "Check Item L4 Tutorial",
 		() => "SetProgressBarTutorialL4",
 		() => "Time Pause L4 Tutorial",
 		() => "Phonograph UI L4 Tutorial",
