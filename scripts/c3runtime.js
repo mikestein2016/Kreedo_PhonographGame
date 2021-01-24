@@ -4093,7 +4093,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		{L4_Attempted: 0},
 		{L4_TotalWrongTaps: 0},
 		{L4_HintTapped: 0},
-		{L4_HintWatching: 0},
 		{L4_BackTapped: 0},
 		{L4_TimeSpent_S1: 0},
 		{L4_TimeSpent_S2: 0},
@@ -5418,7 +5417,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 45);
 		},
-		() => "L4HintSave",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			const v1 = p._GetNode(1).GetVar();
