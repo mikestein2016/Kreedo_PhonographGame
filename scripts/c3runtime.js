@@ -4087,6 +4087,7 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		{L4_CurrentStory: 0},
 		{L4_Repeating: 0},
 		{L4_ReplayEnabled: 0},
+		{L4_Ending: 0},
 		{L4_End: 0},
 		{L4_Completed: 0},
 		{L4_Attempted: 0},
@@ -5175,6 +5176,7 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		() => "Ph_L1_Tutorial_Thumb",
 		() => "Ph_L1_Tutorial_Chest",
 		() => "Ph_L1_Tutorial_Church",
+		() => "P_L2_ImageSound",
 		() => "L2HintSave",
 		() => "Get Variables L2",
 		() => "Get Image Taps L2",
@@ -5184,7 +5186,6 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 		() => "UI L2",
 		() => "GL_A_5",
 		() => "VB_A_L2_8",
-		() => "P_L2_ImageSound",
 		() => "IncorrectSound",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -5286,12 +5287,12 @@ d},Unpin(){this._SetPinInst(null);this._mode="";this._propSet.clear();this._pinI
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("VB_A_L3_8" + v0.GetValue());
 		},
+		() => "Incorrect",
 		() => "Music L3",
 		() => "Shuffle Options L3",
 		() => 480,
 		() => 670,
 		() => "Word Checker L3",
-		() => "Incorrect",
 		() => 0.75,
 		() => "Destroyer L3",
 		() => "Flip Cards L3",
